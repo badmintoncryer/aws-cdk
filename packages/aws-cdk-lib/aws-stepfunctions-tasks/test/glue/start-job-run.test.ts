@@ -1,3 +1,4 @@
+import { WorkerType } from '../../../../@aws-cdk/aws-glue-alpha/lib';
 import { Match, Template } from '../../../assertions';
 import * as sfn from '../../../aws-stepfunctions';
 import { Duration, Stack } from '../../../core';
@@ -55,6 +56,8 @@ test('Invoke glue job with full properties', () => {
     taskTimeout: sfn.Timeout.duration(glueJobTimeout),
     securityConfiguration,
     notifyDelayAfter,
+    workerType: WorkerType.G_2X,
+    numberOfWorkers: 10,
   });
   new sfn.StateMachine(stack, 'SM', {
     definitionBody: sfn.DefinitionBody.fromChainable(task),
@@ -83,6 +86,8 @@ test('Invoke glue job with full properties', () => {
       NotificationProperty: {
         NotifyDelayAfter: notifyDelayAfterMinutes,
       },
+      NumberOfWorkers: 10,
+      WorkerType: 'G.2X',
     },
   });
 });
@@ -200,4 +205,13 @@ test('Task throws if WAIT_FOR_TASK_TOKEN is supplied as service integration patt
       integrationPattern: sfn.IntegrationPattern.WAIT_FOR_TASK_TOKEN,
     });
   }).toThrow(/unsupported service integration pattern/i);
+});
+
+test.each([0, 1.2, NaN])('throw error for invalid  number of workers %s', (numberOfWorkers) => {
+  expect(() => {
+    new tasks.GlueStartJobRun(stack, 'GlueJob', {
+      glueJobName,
+      numberOfWorkers,
+    });
+  }).toThrow('`numberOfWorkers` must be a positive integer');
 });

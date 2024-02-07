@@ -88,11 +88,11 @@ export class GlueStartJobRun extends sfn.TaskStateBase {
     validatePatternSupported(this.integrationPattern, GlueStartJobRun.SUPPORTED_INTEGRATION_PATTERNS);
 
     if (
-      props.numberOfWorkers
+      props.numberOfWorkers !== undefined
       && !Token.isUnresolved(props.numberOfWorkers)
       && (!Number.isInteger(props.numberOfWorkers) || props.numberOfWorkers < 1)
     ) {
-      throw new Error('`numberOfWorkers` must be an integer greater than 0');
+      throw new Error('`numberOfWorkers` must be a positive integer');
     }
 
     this.taskPolicies = this.getPolicies();
