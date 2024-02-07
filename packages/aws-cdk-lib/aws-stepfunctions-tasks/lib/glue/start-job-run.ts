@@ -1,8 +1,9 @@
 import { Construct } from 'constructs';
 import * as iam from '../../../aws-iam';
 import * as sfn from '../../../aws-stepfunctions';
-import { Duration, Stack } from '../../../core';
+import { Duration, Stack, Token } from '../../../core';
 import { integrationResourceArn, validatePatternSupported } from '../private/task-utils';
+import { WorkerType } from '../../../../@aws-cdk/aws-glue-alpha/lib/job';
 
 /**
  * Properties for starting an AWS Glue job as a task
@@ -42,6 +43,23 @@ export interface GlueStartJobRunProps extends sfn.TaskStateBaseProps {
    * @default - Default delay set in the job definition
    */
   readonly notifyDelayAfter?: Duration;
+
+  /**
+   * The number of workers of a defined workerType that are allocated when a job runs.
+   *
+   * @default 10
+   */
+  readonly numberOfWorkers?: number;
+
+  /**
+   * The type of predefined worker that is allocated when a job runs.
+   *
+   * Accepts a value of G.1X, G.2X, G.4X, G.8X or G.025X for Spark jobs.
+   * Accepts the value Z.2X for Ray jobs.
+   *
+   * @default WorkerType.G_1X
+   */
+  readonly workerType?: WorkerType;
 }
 
 /**
@@ -68,6 +86,14 @@ export class GlueStartJobRun extends sfn.TaskStateBase {
     this.integrationPattern = props.integrationPattern ?? sfn.IntegrationPattern.REQUEST_RESPONSE;
 
     validatePatternSupported(this.integrationPattern, GlueStartJobRun.SUPPORTED_INTEGRATION_PATTERNS);
+
+    if (
+      props.numberOfWorkers
+      && !Token.isUnresolved(props.numberOfWorkers)
+      && (!Number.isInteger(props.numberOfWorkers) || props.numberOfWorkers < 1)
+    ) {
+      throw new Error('`numberOfWorkers` must be an integer greater than 0');
+    }
 
     this.taskPolicies = this.getPolicies();
 
@@ -101,6 +127,8 @@ export class GlueStartJobRun extends sfn.TaskStateBase {
         Timeout: timeout,
         SecurityConfiguration: this.props.securityConfiguration,
         NotificationProperty: notificationProperty,
+        NumberOfWorkers: this.props.numberOfWorkers,
+        WorkerType: this.props.workerType?.name,
       }),
       TimeoutSeconds: undefined,
       TimeoutSecondsPath: undefined,
