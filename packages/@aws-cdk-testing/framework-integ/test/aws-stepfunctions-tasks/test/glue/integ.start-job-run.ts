@@ -1,5 +1,7 @@
 import * as path from 'path';
 import * as glue from 'aws-cdk-lib/aws-glue';
+// TODO: glue-alphaがstable担ったら取り組む
+import * as glueAlpha from '../../../../../../@aws-cdk/aws-glue-alpha';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as assets from 'aws-cdk-lib/aws-s3-assets';
 import * as sfn from 'aws-cdk-lib/aws-stepfunctions';
@@ -48,6 +50,8 @@ const jobTask = new GlueStartJobRun(stack, 'Glue Job Task', {
   arguments: sfn.TaskInput.fromObject({
     '--enable-metrics': 'true',
   }),
+  workerType: glueAlpha.WorkerType.G_2X,
+  numberOfWorkers: 10,
 });
 
 const startTask = new sfn.Pass(stack, 'Start Task');
