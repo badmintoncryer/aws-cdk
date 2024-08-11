@@ -611,7 +611,7 @@ export class OrganizationPrincipal extends PrincipalBase {
  * A policy principal for canonicalUserIds - useful for S3 bucket policies that use
  * Origin Access identities.
  *
- * See https://docs.aws.amazon.com/general/latest/gr/acct-identifiers.html
+ * @see https://docs.aws.amazon.com/general/latest/gr/acct-identifiers.html
  *
  * and
  *

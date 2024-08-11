@@ -36,7 +36,7 @@ export enum ConnectionType {
   /**
    * Connect through AWS Systems Manager
    * When using SSM, service role and instance profile aren't automatically created.
-   * See https://docs.aws.amazon.com/cloud9/latest/user-guide/ec2-ssm.html#service-role-ssm
+   * @see https://docs.aws.amazon.com/cloud9/latest/user-guide/ec2-ssm.html#service-role-ssm
    */
   CONNECT_SSM = 'CONNECT_SSM',
 }

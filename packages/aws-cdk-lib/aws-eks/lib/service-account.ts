@@ -182,7 +182,7 @@ export class ServiceAccount extends Construct implements IPrincipal {
       /**
        * Identity type is POD_IDENTITY.
        * Create a service principal with "Service": "pods.eks.amazonaws.com"
-       * See https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html
+       * @see https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html
        */
 
       // EKS Pod Identity does not support Fargate

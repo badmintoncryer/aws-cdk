@@ -755,7 +755,7 @@ export enum HttpVersion {
 
 /**
  * The price class determines how many edge locations CloudFront will use for your distribution.
- * See https://aws.amazon.com/cloudfront/pricing/ for full list of supported regions.
+ * @see https://aws.amazon.com/cloudfront/pricing/ for full list of supported regions.
  */
 export enum PriceClass {
   /** USA, Canada, Europe, & Israel */
@@ -933,7 +933,7 @@ export interface EdgeLambda {
   /**
    * Allows a Lambda function to have read access to the body content.
    * Only valid for "request" event types (`ORIGIN_REQUEST` or `VIEWER_REQUEST`).
-   * See https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/lambda-include-body-access.html
+   * @see https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/lambda-include-body-access.html
    *
    * @default false
    */
@@ -969,7 +969,7 @@ export interface AddBehaviorOptions {
 
   /**
    * Whether you want CloudFront to automatically compress certain files for this cache behavior.
-   * See https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/ServingCompressedFiles.html#compressed-content-cloudfront-file-types
+   * @see https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/ServingCompressedFiles.html#compressed-content-cloudfront-file-types
    * for file types CloudFront will compress.
    *
    * @default true

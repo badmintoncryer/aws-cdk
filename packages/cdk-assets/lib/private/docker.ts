@@ -150,7 +150,7 @@ export class Docker {
    * Sets up `docker-credential-cdk-assets` to be the credential helper for each domain in the CDK config.
    * All future commands (e.g., `build`, `push`) will use this config.
    *
-   * See https://docs.docker.com/engine/reference/commandline/login/#credential-helpers for more details on cred helpers.
+   * @see https://docs.docker.com/engine/reference/commandline/login/#credential-helpers for more details on cred helpers.
    *
    * @returns true if CDK config was found and configured, false otherwise
    */

@@ -19,7 +19,7 @@ export interface TagOptionsProps {
 /**
  * Defines a set of TagOptions, which are a list of key-value pairs managed in AWS Service Catalog.
  * It is not an AWS tag, but serves as a template for creating an AWS tag based on the TagOption.
- * See https://docs.aws.amazon.com/servicecatalog/latest/adminguide/tagoptions.html
+ * @see https://docs.aws.amazon.com/servicecatalog/latest/adminguide/tagoptions.html
  *
  * @resource AWS::ServiceCatalog::TagOption
  */

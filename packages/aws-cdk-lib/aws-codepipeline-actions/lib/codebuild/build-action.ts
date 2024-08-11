@@ -51,7 +51,7 @@ export interface CodeBuildActionProps extends codepipeline.CommonAwsActionProps 
    * **Note**: if you specify more than one output Artifact here,
    * you cannot use the primary 'artifacts' section of the buildspec;
    * you have to use the 'secondary-artifacts' section instead.
-   * See https://docs.aws.amazon.com/codebuild/latest/userguide/sample-multi-in-out.html
+   * @see https://docs.aws.amazon.com/codebuild/latest/userguide/sample-multi-in-out.html
    * for details.
    *
    * @default the action will not have any outputs

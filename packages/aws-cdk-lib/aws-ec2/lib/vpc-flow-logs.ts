@@ -753,7 +753,7 @@ export interface FlowLogOptions {
    * If multiple fields are specified, they will be separated by spaces. For full control over the literal log format
    * string, pass a single field constructed with `LogFormat.custom()`.
    *
-   * See https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html#flow-log-records
+   * @see https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html#flow-log-records
    *
    * @default - default log format is used.
    */

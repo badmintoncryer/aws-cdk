@@ -314,7 +314,7 @@ export enum LambdaVersion {
 export interface UserVerificationConfig {
   /**
    * The email subject template for the verification email sent to the user upon sign up.
-   * See https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-message-templates.html to
+   * @see https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-message-templates.html to
    * learn more about message templates.
    * @default 'Verify your new account'
    */
@@ -322,7 +322,7 @@ export interface UserVerificationConfig {
 
   /**
    * The email body template for the verification email sent to the user upon sign up.
-   * See https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-message-templates.html to
+   * @see https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-message-templates.html to
    * learn more about message templates.
    *
    * @default - 'The verification code to your new account is {####}' if VerificationEmailStyle.CODE is chosen,
@@ -339,7 +339,7 @@ export interface UserVerificationConfig {
 
   /**
    * The message template for the verification SMS sent to the user upon sign up.
-   * See https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-message-templates.html to
+   * @see https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-message-templates.html to
    * learn more about message templates.
    *
    * @default - 'The verification code to your new account is {####}' if VerificationEmailStyle.CODE is chosen,

@@ -37,7 +37,7 @@ export interface SubnetV2Props {
 
   /**
    * ipv4 cidr to assign to this subnet.
-   * See https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-subnet.html#cfn-ec2-subnet-cidrblock
+   * @see https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-subnet.html#cfn-ec2-subnet-cidrblock
    */
   readonly ipv4CidrBlock: IpCidr;
 

@@ -28,7 +28,7 @@ export class FilterPattern {
   /**
    * Use the given string as log pattern.
    *
-   * See https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html
+   * @see https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html
    * for information on writing log patterns.
    *
    * @param logPatternString The pattern string to use.

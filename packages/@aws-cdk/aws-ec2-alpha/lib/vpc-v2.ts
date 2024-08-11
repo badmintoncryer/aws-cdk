@@ -205,7 +205,7 @@ export class VpcV2 extends VpcV2Base {
   /**
    * The IPv6 CIDR blocks for the VPC.
    *
-   * See https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-vpc.html#aws-resource-ec2-vpc-return-values
+   * @see https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-vpc.html#aws-resource-ec2-vpc-return-values
    */
   public readonly ipv6CidrBlocks: string[];
 

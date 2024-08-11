@@ -320,7 +320,7 @@ export interface DatabaseClusterProps {
 
   /**
    * Specify minimum and maximum NCUs capacity for a serverless cluster.
-   * See https://docs.aws.amazon.com/neptune/latest/userguide/neptune-serverless-capacity-scaling.html
+   * @see https://docs.aws.amazon.com/neptune/latest/userguide/neptune-serverless-capacity-scaling.html
    *
    * @default - required if instanceType is db.serverless
    */

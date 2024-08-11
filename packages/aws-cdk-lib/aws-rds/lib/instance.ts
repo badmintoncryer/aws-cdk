@@ -412,7 +412,7 @@ export interface DatabaseInstanceNewProps {
    * @default - the default number of CPU cores and threads per core for the
    * chosen instance class.
    *
-   * See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html#USER_ConfigureProcessor
+   * @see https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html#USER_ConfigureProcessor
    */
   readonly processorFeatures?: ProcessorFeatures;
 

@@ -43,7 +43,7 @@ export function trimFromStart(s: string, maxLength: number) {
  *
  * Adding a new property to this list - If the property is part of the UpdateFunctionConfiguration
  * API or UpdateFunctionCode API, then it must be classified as true, otherwise false.
- * See https://docs.aws.amazon.com/lambda/latest/dg/API_UpdateFunctionConfiguration.html and
+ * @see https://docs.aws.amazon.com/lambda/latest/dg/API_UpdateFunctionConfiguration.html and
  * https://docs.aws.amazon.com/lambda/latest/dg/API_UpdateFunctionConfiguration.html
  */
 export const VERSION_LOCKED: { [key: string]: boolean } = {

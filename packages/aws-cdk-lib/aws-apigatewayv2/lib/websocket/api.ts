@@ -25,7 +25,7 @@ export class WebSocketApiKeySelectionExpression {
   /**
     * The API will extract the key value from the `usageIdentifierKey` attribute in the `context` map,
     * returned by the Lambda Authorizer.
-    * See https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-lambda-authorizer-output.html
+    * @see https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-lambda-authorizer-output.html
     */
   public static readonly AUTHORIZER_USAGE_IDENTIFIER_KEY = new WebSocketApiKeySelectionExpression('$context.authorizer.usageIdentifierKey');
 

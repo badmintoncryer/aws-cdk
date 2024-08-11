@@ -34,7 +34,7 @@ export interface EdgeFunctionProps extends lambda.FunctionProps {
  * Implements several restrictions enforced by Lambda@Edge.
  *
  * Note that this construct requires that the 'us-east-1' region has been bootstrapped.
- * See https://docs.aws.amazon.com/cdk/latest/guide/bootstrapping.html or 'cdk bootstrap --help' for options.
+ * @see https://docs.aws.amazon.com/cdk/latest/guide/bootstrapping.html or 'cdk bootstrap --help' for options.
  *
  * @resource AWS::Lambda::Function
  */

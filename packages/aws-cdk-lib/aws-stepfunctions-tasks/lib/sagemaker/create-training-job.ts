@@ -21,7 +21,7 @@ export interface SageMakerCreateTrainingJobProps extends sfn.TaskStateBaseProps 
    * Role for the Training Job. The role must be granted all necessary permissions for the SageMaker training job to
    * be able to operate.
    *
-   * See https://docs.aws.amazon.com/fr_fr/sagemaker/latest/dg/sagemaker-roles.html#sagemaker-roles-createtrainingjob-perms
+   * @see https://docs.aws.amazon.com/fr_fr/sagemaker/latest/dg/sagemaker-roles.html#sagemaker-roles-createtrainingjob-perms
    *
    * @default - a role will be created.
    */

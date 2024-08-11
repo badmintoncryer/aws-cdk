@@ -16,7 +16,7 @@ export type Synthesizer = (aws: SdkProvider, config: Configuration) => Promise<c
 /**
  * The Cloud Assembly schema version where the framework started to generate analytics itself
  *
- * See https://github.com/aws/aws-cdk/pull/10306
+ * @see https://github.com/aws/aws-cdk/pull/10306
  */
 const TEMPLATE_INCLUDES_ANALYTICS_SCHEMA_VERSION = '6.0.0';
 
