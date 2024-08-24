@@ -70,6 +70,29 @@ describe('rules', () => {
     }).toThrow('ExpiredObjectDeleteMarker cannot be specified with expiration, ExpirationDate, or TagFilters.');
   });
 
+  test.each([
+    {
+      transitionDate: new Date('2018-01-01'),
+      transitionAfter: Duration.days(30),
+    },
+    {
+      transitionDate: undefined,
+      transitionAfter: undefined,
+    },
+  ])('throw error for invalid transitions', (transition) => {
+    const stack = new Stack();
+    expect(() => {
+      new Bucket(stack, 'Bucket', {
+        lifecycleRules: [{
+          transitions: [{
+            ...transition,
+            storageClass: StorageClass.GLACIER,
+          }],
+        }],
+      });
+    }).toThrow('Exactly one of \'transitionDate\' or \'transitionInDays\' must be specified.');
+  });
+
   test('Can use addLifecycleRule() to add a lifecycle rule', () => {
     // GIVEN
     const stack = new Stack();

@@ -2257,7 +2257,7 @@ export class Bucket extends BucketBase {
       if (rule.transitions?.some(
         t => (t.transitionDate && t.transitionAfter) || (!t.transitionDate && !t.transitionAfter),
       )) {
-        throw new Error('Exactly one of TransitionDate or TransitionInDays must be specified.');
+        throw new Error('Exactly one of \'transitionDate\' or \'transitionInDays\' must be specified.');
       }
 
       const x: CfnBucket.RuleProperty = {
