@@ -2254,6 +2254,12 @@ export class Bucket extends BucketBase {
         throw new Error('ExpiredObjectDeleteMarker cannot be specified with expiration, ExpirationDate, or TagFilters.');
       }
 
+      if (rule.transitions?.some(
+        t => (t.transitionDate && t.transitionAfter) || (!t.transitionDate && !t.transitionAfter),
+      )) {
+        throw new Error('Exactly one of TransitionDate or TransitionInDays must be specified.');
+      }
+
       const x: CfnBucket.RuleProperty = {
         // eslint-disable-next-line max-len
         abortIncompleteMultipartUpload: rule.abortIncompleteMultipartUploadAfter !== undefined ? { daysAfterInitiation: rule.abortIncompleteMultipartUploadAfter.toDays() } : undefined,
