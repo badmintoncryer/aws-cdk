@@ -445,4 +445,24 @@ describe('vpn', () => {
     });
 
   });
+
+  test('can specify `enableAcceleration`', () => {
+    // GIVEN
+    const stack = new Stack();
+
+    // WHEN
+    new Vpc(stack, 'VpcNetwork', {
+      vpnConnections: {
+        static: {
+          ip: '192.0.2.1',
+          enableAcceleration: true,
+        },
+      },
+    });
+
+    // THEN
+    Template.fromStack(stack).hasResourceProperties('AWS::EC2::VPNConnection', {
+      EnableAcceleration: true,
+    });
+  });
 });

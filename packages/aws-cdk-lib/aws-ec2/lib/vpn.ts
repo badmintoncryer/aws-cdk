@@ -103,6 +103,13 @@ export interface VpnConnectionOptions {
    * @default Amazon generated tunnel options
    */
   readonly tunnelOptions?: VpnTunnelOption[];
+
+  /**
+   * Indicate whether to enable acceleration for the VPN connection.
+   *
+   * @default false
+   */
+  readonly enableAcceleration?: boolean;
 }
 
 /**
@@ -358,6 +365,7 @@ export class VpnConnection extends VpnConnectionBase {
         preSharedKey: t.preSharedKeySecret?.unsafeUnwrap() ?? t.preSharedKey,
         tunnelInsideCidr: t.tunnelInsideCidr,
       })),
+      enableAcceleration: props.enableAcceleration,
     });
 
     this.vpnId = vpnConnection.ref;
