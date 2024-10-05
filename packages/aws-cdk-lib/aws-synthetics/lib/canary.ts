@@ -10,6 +10,7 @@ import * as ec2 from '../../aws-ec2';
 import * as iam from '../../aws-iam';
 import * as s3 from '../../aws-s3';
 import * as cdk from '../../core';
+import * as kms from '../../aws-kms';
 import { AutoDeleteUnderlyingResourcesProvider } from '../../custom-resource-handlers/dist/aws-synthetics/auto-delete-underlying-resources-provider.generated';
 
 const AUTO_DELETE_UNDERLYING_RESOURCES_RESOURCE_TYPE = 'Custom::SyntheticsAutoDeleteUnderlyingResources';
@@ -101,6 +102,13 @@ export interface CanaryProps {
    * @default - A new s3 bucket will be created without a prefix.
    */
   readonly artifactsBucketLocation?: ArtifactsBucketLocation;
+
+  /**
+   * The  customer managed key to use for the artifacts bucket.
+   *
+   * @default - an AWS-managed AWS KMS key is used
+   */
+  readonly kmsKeyForArtifactsBucket?: kms.IKey
 
   /**
    * Canary execution role.
@@ -330,6 +338,12 @@ export class Canary extends cdk.Resource implements ec2.IConnectable {
     }
 
     const resource: CfnCanary = new CfnCanary(this, 'Resource', {
+      artifactConfig: props.kmsKeyForArtifactsBucket ? {
+        s3Encryption: {
+          encryptionMode: 'SSE-KMS',
+          kmsKeyArn: props.kmsKeyForArtifactsBucket.keyArn,
+        }
+      } : undefined,
       artifactS3Location: this.artifactsBucket.s3UrlForObject(props.artifactsBucketLocation?.prefix),
       executionRoleArn: this.role.roleArn,
       startCanaryAfterCreation: props.startAfterCreation ?? true,
@@ -475,13 +489,20 @@ export class Canary extends cdk.Resource implements ec2.IConnectable {
       managedPolicies.push(iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaVPCAccessExecutionRole'));
     }
 
-    return new iam.Role(this, 'ServiceRole', {
+    const role = new iam.Role(this, 'ServiceRole', {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
       inlinePolicies: {
         canaryPolicy: policy,
       },
       managedPolicies,
     });
+
+    // Grant the role permissions to encrypt artifacts in the bucket
+    // For visual monitorig, the canary needs to be able to encrypt and decrypt artifacts.
+    // @see https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_artifact_encryption.html
+    props.kmsKeyForArtifactsBucket?.grantEncryptDecrypt(role);
+
+    return role;
   }
 
   private logGroupArn() {
