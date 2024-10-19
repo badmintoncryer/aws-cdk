@@ -348,11 +348,7 @@ export class Trail extends Resource {
         conditions: {
           StringEquals: {
             's3:x-amz-acl': 'bucket-owner-full-control',
-            'aws:SourceArn': Stack.of(this).formatArn({
-              service: 'cloudtrail',
-              resource: 'trail',
-              resourceName: props.trailName ?? trail.ref,
-            }),
+            'aws:SourceArn': trail.attrArn,
           },
         },
       }));
