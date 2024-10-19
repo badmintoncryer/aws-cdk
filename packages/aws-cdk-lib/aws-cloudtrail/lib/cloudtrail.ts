@@ -270,22 +270,6 @@ export class Trail extends Resource {
       },
     }));
 
-    if (props.isOrganizationTrail) {
-      this.s3bucket.addToResourcePolicy(new iam.PolicyStatement({
-        resources: [this.s3bucket.arnForObjects(
-          `AWSLogs/${props.orgId}/*`,
-        )],
-        actions: ['s3:PutObject'],
-        principals: [cloudTrailPrincipal],
-        conditions: {
-          StringEquals: {
-            's3:x-amz-acl': 'bucket-owner-full-control',
-            'aws:SourceArn': `arn:${this.stack.partition}:cloudtrail:${this.s3bucket.stack.region}:${this.s3bucket.stack.account}:trail/${props.trailName}`,
-          },
-        },
-      }));
-    }
-
     this.topic = props.snsTopic;
     if (this.topic) {
       this.topic.grantPublish(cloudTrailPrincipal);
@@ -353,6 +337,22 @@ export class Trail extends Resource {
       resourceName: this.physicalName,
     });
     this.trailSnsTopicArn = trail.attrSnsTopicArn;
+
+    if (props.isOrganizationTrail) {
+      this.s3bucket.addToResourcePolicy(new iam.PolicyStatement({
+        resources: [this.s3bucket.arnForObjects(
+          `AWSLogs/${props.orgId}/*`,
+        )],
+        actions: ['s3:PutObject'],
+        principals: [cloudTrailPrincipal],
+        conditions: {
+          StringEquals: {
+            's3:x-amz-acl': 'bucket-owner-full-control',
+            'aws:SourceArn': `arn:${this.stack.partition}:cloudtrail:${this.s3bucket.stack.region}:${this.s3bucket.stack.account}:trail/${props.trailName ?? trail.ref}`,
+          },
+        },
+      }));
+    }
 
     // Add a dependency on the bucket policy being updated, CloudTrail will test this upon creation.
     if (this.s3bucket.policy) {
