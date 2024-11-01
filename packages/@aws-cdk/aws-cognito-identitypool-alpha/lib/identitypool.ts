@@ -1,5 +1,6 @@
 import { CfnIdentityPool, IUserPool, IUserPoolClient } from 'aws-cdk-lib/aws-cognito';
-import { IOpenIdConnectProvider, ISamlProvider, Role, FederatedPrincipal, IRole } from 'aws-cdk-lib/aws-iam';
+import { IOpenIdConnectProvider, ISamlProvider, Role, FederatedPrincipal, IRole, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import * as kenesis from 'aws-cdk-lib/aws-kinesis';
 import { Resource, IResource, Stack, ArnFormat, Lazy, Token } from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 import { IdentityPoolRoleAttachment, IdentityPoolRoleMapping } from './identitypool-role-attachment';
@@ -73,6 +74,15 @@ export interface IdentityPoolProps {
    * @default - No Authentication Providers passed directly to Identity Pool
    */
   readonly authenticationProviders?: IdentityPoolAuthenticationProviders;
+
+  /**
+   * Kinesis Stream used as the Amazon Cognito Streams
+   *
+   * @see https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-streams.html
+   *
+   * @default - do not enable Cognito Streams
+   */
+  readonly stream?: kenesis.IStream;
 }
 
 /**
@@ -391,6 +401,7 @@ export class IdentityPool extends Resource implements IIdentityPool {
       samlProviderArns,
       supportedLoginProviders,
       cognitoIdentityProviders: Lazy.any({ produce: () => this.cognitoIdentityProviders }),
+      cognitoStreams: this.renderCognitoStreams(props.stream),
     });
     this.identityPoolName = cfnIdentityPool.attrName;
     this.identityPoolId = cfnIdentityPool.ref;
@@ -435,6 +446,20 @@ export class IdentityPool extends Resource implements IIdentityPool {
     });
 
     Array.isArray(attachment);
+  }
+
+  private renderCognitoStreams(stream?: kenesis.IStream): CfnIdentityPool.CognitoStreamsProperty | undefined {
+    if (!stream) return undefined;
+    const streamRole = new Role(this, 'CognitoStreamRole', {
+      assumedBy: new ServicePrincipal('cognito-sync.amazonaws.com'),
+    });
+    stream.grantWrite(streamRole);
+
+    return {
+      roleArn: streamRole.roleArn,
+      streamName: stream.streamName,
+      streamingStatus: 'ENABLED',
+    };
   }
 
   /**

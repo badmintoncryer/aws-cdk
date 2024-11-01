@@ -1,0 +1,12 @@
+{
+  "version": "38.0.1",
+  "testCases": {
+    "IdentitypoolWithStreamStackInteg/DefaultTest": {
+      "stacks": [
+        "IdentitypoolWithStreamStack"
+      ],
+      "assertionStack": "IdentitypoolWithStreamStackInteg/DefaultTest/DeployAssert",
+      "assertionStackName": "IdentitypoolWithStreamStackIntegDefaultTestDeployAssertE9EA734F"
+    }
+  }
+}

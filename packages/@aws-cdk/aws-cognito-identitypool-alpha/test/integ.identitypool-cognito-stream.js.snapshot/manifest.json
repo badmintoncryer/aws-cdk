@@ -1,0 +1,157 @@
+{
+  "version": "38.0.1",
+  "artifacts": {
+    "IdentitypoolWithStreamStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "IdentitypoolWithStreamStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "IdentitypoolWithStreamStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "IdentitypoolWithStreamStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "notificationArns": [],
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/6bd9ce75af625849736238d82f90ed441143c83337410abff86671541187629e.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "IdentitypoolWithStreamStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "IdentitypoolWithStreamStack.assets"
+      ],
+      "metadata": {
+        "/IdentitypoolWithStreamStack/Stream/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Stream790BDEE4"
+          }
+        ],
+        "/IdentitypoolWithStreamStack/AwsCdkKinesisEncryptedStreamsUnsupportedRegions": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AwsCdkKinesisEncryptedStreamsUnsupportedRegions"
+          }
+        ],
+        "/IdentitypoolWithStreamStack/identitypool/CognitoStreamRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "identitypoolCognitoStreamRoleCDA03609"
+          }
+        ],
+        "/IdentitypoolWithStreamStack/identitypool/CognitoStreamRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "identitypoolCognitoStreamRoleDefaultPolicy982B6F0E"
+          }
+        ],
+        "/IdentitypoolWithStreamStack/identitypool/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "identitypoolE2A6D099"
+          }
+        ],
+        "/IdentitypoolWithStreamStack/identitypool/AuthenticatedRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "identitypoolAuthenticatedRoleB074B49D"
+          }
+        ],
+        "/IdentitypoolWithStreamStack/identitypool/UnauthenticatedRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "identitypoolUnauthenticatedRoleE61CAC70"
+          }
+        ],
+        "/IdentitypoolWithStreamStack/identitypool/DefaultRoleAttachment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "identitypoolDefaultRoleAttachment6BCAB114"
+          }
+        ],
+        "/IdentitypoolWithStreamStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/IdentitypoolWithStreamStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "IdentitypoolWithStreamStack"
+    },
+    "IdentitypoolWithStreamStackIntegDefaultTestDeployAssertE9EA734F.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "IdentitypoolWithStreamStackIntegDefaultTestDeployAssertE9EA734F.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "IdentitypoolWithStreamStackIntegDefaultTestDeployAssertE9EA734F": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "IdentitypoolWithStreamStackIntegDefaultTestDeployAssertE9EA734F.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "notificationArns": [],
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/21fbb51d7b23f6a6c262b46a9caee79d744a3ac019fd45422d988b96d44b2a22.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "IdentitypoolWithStreamStackIntegDefaultTestDeployAssertE9EA734F.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "IdentitypoolWithStreamStackIntegDefaultTestDeployAssertE9EA734F.assets"
+      ],
+      "metadata": {
+        "/IdentitypoolWithStreamStackInteg/DefaultTest/DeployAssert/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/IdentitypoolWithStreamStackInteg/DefaultTest/DeployAssert/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "IdentitypoolWithStreamStackInteg/DefaultTest/DeployAssert"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

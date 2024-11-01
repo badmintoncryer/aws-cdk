@@ -1,0 +1,19 @@
+{
+  "version": "38.0.1",
+  "files": {
+    "6bd9ce75af625849736238d82f90ed441143c83337410abff86671541187629e": {
+      "source": {
+        "path": "IdentitypoolWithStreamStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "current_account-current_region": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "6bd9ce75af625849736238d82f90ed441143c83337410abff86671541187629e.json",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}
