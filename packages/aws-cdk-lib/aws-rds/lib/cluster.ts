@@ -428,7 +428,9 @@ interface DatabaseClusterBaseProps {
   readonly autoMinorVersionUpgrade?: boolean;
 
   /**
-   * Indicates whether the DB instance is an internet-facing instance.
+   * Specifies whether the DB cluster is publicly accessible.
+   *
+   * @see https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-rds-dbcluster.html#cfn-rds-dbcluster-publiclyaccessible
    *
    * @default - `true` if `vpcSubnets` is `subnetType: SubnetType.PUBLIC`, `false` otherwise
    */

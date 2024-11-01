@@ -164,6 +164,27 @@ describe('cluster new api', () => {
       });
     });
 
+    test.each([true, false])('specify publicly accessible', (publiclyAccessible) => {
+      // GIVEN
+      const stack = testStack();
+      const vpc = new ec2.Vpc(stack, 'VPC');
+
+      // WHEN
+      new DatabaseCluster(stack, 'Database', {
+        engine: DatabaseClusterEngine.AURORA_MYSQL,
+        vpc,
+        publiclyAccessible,
+        writer: ClusterInstance.serverlessV2('writer'),
+      });
+
+      // THEN
+      const template = Template.fromStack(stack);
+      template.hasResourceProperties('AWS::RDS::DBCluster', {
+        Engine: 'aurora-mysql',
+        PubliclyAccessible: publiclyAccessible,
+      });
+    });
+
     test('with serverless instances', () => {
       // GIVEN
       const stack = testStack();
