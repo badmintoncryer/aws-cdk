@@ -426,6 +426,13 @@ interface DatabaseClusterBaseProps {
    * @default true
    */
   readonly autoMinorVersionUpgrade?: boolean;
+
+  /**
+   * Indicates whether the DB instance is an internet-facing instance.
+   *
+   * @default - `true` if `vpcSubnets` is `subnetType: SubnetType.PUBLIC`, `false` otherwise
+   */
+  readonly publiclyAccessible?: boolean;
 }
 
 /**
@@ -803,6 +810,7 @@ abstract class DatabaseClusterNew extends DatabaseClusterBase {
       performanceInsightsKmsKeyId: this.performanceInsightEncryptionKey?.keyArn,
       performanceInsightsRetentionPeriod: this.performanceInsightRetention,
       autoMinorVersionUpgrade: props.autoMinorVersionUpgrade,
+      publiclyAccessible: props.publiclyAccessible,
     };
   }
 
