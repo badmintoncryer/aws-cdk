@@ -45,6 +45,7 @@ const cluster = new DatabaseCluster(stack, 'Database', {
   autoMinorVersionUpgrade: true,
   cloudwatchLogsExports: [LogType.AUDIT],
   cloudwatchLogsRetention: logs.RetentionDays.ONE_MONTH,
+  availabilityZones: vpc.availabilityZones,
 });
 
 cluster.connections.allowDefaultPortFromAnyIpv4('Open to the world');
@@ -60,5 +61,3 @@ new cloudwatch.Alarm(stack, 'Alarm', {
 new integ.IntegTest(app, 'ClusterTest', {
   testCases: [stack],
 });
-
-app.synth();

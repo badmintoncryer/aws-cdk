@@ -364,6 +364,13 @@ export interface DatabaseClusterProps {
    * @default 8182
    */
   readonly port?: number;
+
+  /**
+   * The list of Availability Zones that instances in the DB cluster can be created in.
+   *
+   * @default undefined - 
+   */
+  readonly availabilityZones?: string[];
 }
 
 /**
@@ -597,7 +604,7 @@ export class DatabaseCluster extends DatabaseClusterBase implements IDatabaseClu
     addConstructMetadata(this, props);
 
     this.vpc = props.vpc;
-    this.vpcSubnets = props.vpcSubnets ?? { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS };
+    this.vpcSubnets = props.vpcSubnets ?? { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS, availabilityZones: props.availabilityZones };
 
     // Determine the subnet(s) to deploy the Neptune cluster to
     const { subnetIds, internetConnectivityEstablished } = this.vpc.selectSubnets(this.vpcSubnets);
@@ -650,6 +657,7 @@ export class DatabaseCluster extends DatabaseClusterBase implements IDatabaseClu
       associatedRoles: props.associatedRoles ? props.associatedRoles.map(role => ({ roleArn: role.roleArn })) : undefined,
       iamAuthEnabled: Lazy.any({ produce: () => this.enableIamAuthentication }),
       dbPort: props.port,
+      availabilityZones: props.availabilityZones,
       // Backup
       backupRetentionPeriod: props.backupRetention?.toDays(),
       preferredBackupWindow: props.preferredBackupWindow,
