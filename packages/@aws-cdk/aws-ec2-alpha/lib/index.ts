@@ -16,3 +16,4 @@ export * from './transit-gateway-vpc-attachment';
 export * from './transit-gateway-association';
 export * from './transit-gateway-route-table-association';
 export * from './transit-gateway-route-table-propagation';
+export * from './eip';
