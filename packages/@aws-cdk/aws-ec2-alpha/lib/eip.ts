@@ -1,8 +1,8 @@
-import { IResource, Resource } from "aws-cdk-lib";
-import { addConstructMetadata } from "aws-cdk-lib/core/lib/metadata-resource";
+import { IResource, Resource } from 'aws-cdk-lib';
+import { addConstructMetadata } from 'aws-cdk-lib/core/lib/metadata-resource';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import { IIpamPool } from './ipam';
-import { Construct } from "constructs";
+import { Construct } from 'constructs';
 
 /**
  * Represents an Elastic IP address.
@@ -38,14 +38,14 @@ export interface EipAttributes {
  */
 export enum Domain {
   /**
-   * 
+   *
    */
-  VPC = "vpc",
+  VPC = 'vpc',
 
   /**
-   * 
+   *
    */
-  STANDARD = "standard",
+  STANDARD = 'standard',
 }
 
 export interface EipProps {
@@ -71,7 +71,7 @@ export interface EipProps {
    *
    * @see https://docs.aws.amazon.com/vpc/latest/ipam/tutorials-eip-pool.html
    *
-   * @default 
+   * @default
    */
   readonly ipamPool?: IIpamPool;
 }
@@ -107,7 +107,7 @@ export class Eip extends Resource implements IEip {
   public constructor(scope: Construct, id: string, props: EipProps) {
     super(scope, id);
     // Enhanced CDK Analytics Telemetry
-    addConstructMetadata(this, props)
+    addConstructMetadata(this, props);
 
     const resource = new ec2.CfnEIP(this, id, {
       domain: props.domain,
