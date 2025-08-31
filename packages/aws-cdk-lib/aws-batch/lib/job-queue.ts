@@ -127,6 +127,14 @@ export interface JobQueueProps {
    * @default - no actions
    */
   readonly jobStateTimeLimitActions?: JobStateTimeLimitAction[];
+
+  /**
+   * The type of job queue.
+   *
+   * For service jobs that run on SageMaker AI, this value is SAGEMAKER_TRAINING.
+   * For regular container jobs, this value is EKS, ECS, or ECS_FARGATE depending on the compute environment.
+   */
+  readonly type?: JobQueueType;
 }
 
 /**
@@ -225,6 +233,28 @@ export enum JobStateTimeLimitActionsState {
 }
 
 /**
+ * The type of the JobQueue.
+ */
+export enum JobQueueType {
+  /**
+   * EKS
+   */
+  EKS = 'EKS',
+  /**
+   * ECS on EC2
+   */
+  ECS = 'ECS',
+  /**
+   * ECS on Fargate
+   */
+  ECS_FARGATE = 'ECS_FARGATE',
+  /**
+   * SageMaker Training
+   */
+  SAGEMAKER_TRAINING = 'SAGEMAKER_TRAINING',
+}
+
+/**
  * JobQueues can receive Jobs, which are removed from the queue when
  * sent to the linked ComputeEnvironment(s) to be executed.
  * Jobs exit the queue in FIFO order unless a `SchedulingPolicy` is linked.
@@ -287,6 +317,7 @@ export class JobQueue extends Resource implements IJobQueue {
       state: (this.enabled ?? true) ? 'ENABLED' : 'DISABLED',
       schedulingPolicyArn: this.schedulingPolicy?.schedulingPolicyArn,
       jobStateTimeLimitActions: this.renderJobStateTimeLimitActions(props?.jobStateTimeLimitActions),
+      jobQueueType: props?.type,
     });
 
     this.jobQueueArn = this.getResourceArnAttribute(resource.attrJobQueueArn, {
