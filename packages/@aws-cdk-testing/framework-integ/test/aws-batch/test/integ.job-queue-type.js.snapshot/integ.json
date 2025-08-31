@@ -1,0 +1,13 @@
+{
+  "version": "48.0.0",
+  "testCases": {
+    "JobQueueTypeStackInteg/DefaultTest": {
+      "stacks": [
+        "JobQueueTypeStack"
+      ],
+      "assertionStack": "JobQueueTypeStackInteg/DefaultTest/DeployAssert",
+      "assertionStackName": "JobQueueTypeStackIntegDefaultTestDeployAssert7DB3D22C"
+    }
+  },
+  "minimumCliVersion": "2.1027.0"
+}
