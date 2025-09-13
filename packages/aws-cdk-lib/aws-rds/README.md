@@ -436,6 +436,31 @@ new rds.DatabaseCluster(this, 'Database', {
 When set to `false`, automated backups are retained according to the configured retention period after the cluster is deleted. When set to `true` or not specified (default), automated backups are deleted immediately when the cluster is deleted.
 Detail about this feature can be found in the [AWS documentation](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Managing.Backups.Retaining.html).
 
+### Backup Target
+
+You can specify where to store automated backups and manual snapshots for database instances using the `backupTarget` property. This is useful when deploying RDS instances on AWS Outposts or in Local Zones.
+
+```ts
+declare const vpc: ec2.Vpc;
+
+const instance = new rds.DatabaseInstance(this, 'Instance', {
+  engine: rds.DatabaseInstanceEngine.mysql({ version: rds.MysqlEngineVersion.VER_8_0_19 }),
+  instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MICRO),
+  vpc,
+  backupTarget: rds.BackupTarget.LOCAL,  // Store backups in Dedicated Local Zones
+});
+```
+
+Available backup targets:
+
+- `BackupTarget.REGION` (default) - Store backups in the AWS Region
+- `BackupTarget.OUTPOSTS` - Store backups on AWS Outposts
+- `BackupTarget.LOCAL` - Store backups in Dedicated Local Zones
+
+**Important**: Changing the `backupTarget` property after the DB instance is created will require replacement of the DB instance. Plan accordingly to avoid data loss.
+
+For more information about outposts backup targets, see [Working with Amazon RDS on AWS Outposts](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html).
+
 ### Migrating from instanceProps
 
 Creating instances in a `DatabaseCluster` using `instanceProps` & `instances` is

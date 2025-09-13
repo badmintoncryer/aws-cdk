@@ -404,6 +404,28 @@ export enum StorageType {
 }
 
 /**
+ * The location for storing automated backups and manual snapshots.
+ */
+export enum BackupTarget {
+  /**
+   * Store backups in the AWS Region.
+   */
+  REGION = 'region',
+
+  /**
+   * Store backups on AWS Outposts.
+   *
+   * @see https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html
+   */
+  OUTPOSTS = 'outposts',
+
+  /**
+   * Store backups in Dedicated Local Zones.
+   */
+  LOCAL = 'local',
+}
+
+/**
  * The network type of the DB instance.
  */
 export enum NetworkType {
@@ -552,6 +574,17 @@ export interface DatabaseInstanceNewProps {
    * @default - Duration.days(1) for source instances, disabled for read replicas
    */
   readonly backupRetention?: Duration;
+
+  /**
+   * The location for storing automated backups and manual snapshots.
+   *
+   * - `BackupTarget.REGION` - Store backups in the AWS Region (default)
+   * - `BackupTarget.OUTPOSTS` - Store backups on AWS Outposts
+   * - `BackupTarget.LOCAL` - Store backups in Dedicated Local Zones
+   *
+   * @default undefined - AWS RDS default is `REGION`
+   */
+  readonly backupTarget?: BackupTarget;
 
   /**
    * The daily time range during which automated backups are performed.
@@ -1155,6 +1188,7 @@ abstract class DatabaseInstanceSource extends DatabaseInstanceNew implements IDa
       optionGroupName: engineConfig.optionGroup?.optionGroupName,
       allocatedStorage: props.allocatedStorage?.toString() ?? '100',
       allowMajorVersionUpgrade: props.allowMajorVersionUpgrade,
+      backupTarget: props.backupTarget,
       dbName: props.databaseName,
       engine: engineType,
       engineVersion: props.engine.engineVersion?.fullVersion,
@@ -1537,6 +1571,7 @@ export class DatabaseInstanceReadReplica extends DatabaseInstanceNew implements 
 
     const instance = new CfnDBInstance(this, 'Resource', {
       ...this.newCfnProps,
+      backupTarget: props.backupTarget,
       // this must be ARN, not ID, because of https://github.com/terraform-providers/terraform-provider-aws/issues/528#issuecomment-391169012
       sourceDbInstanceIdentifier: props.sourceDatabaseInstance.instanceArn,
       kmsKeyId: props.storageEncryptionKey?.keyRef.keyArn,

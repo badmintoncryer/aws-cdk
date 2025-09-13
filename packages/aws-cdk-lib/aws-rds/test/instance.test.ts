@@ -2602,4 +2602,78 @@ describe('database insights for instance', () => {
       });
     }).toThrow(/`performanceInsightRetention` must be set to '\${PerformanceInsightRetention.MONTHS_15}' when `databaseInsightsMode` is set to '\${DatabaseInsightsMode.ADVANCED}'/);
   });
+
+  describe('backupTarget', () => {
+    beforeEach(() => {
+      stack = new cdk.Stack();
+      vpc = new ec2.Vpc(stack, 'VPC');
+    });
+
+    test('set backupTarget to DatabaseInstance', () => {
+      // WHEN
+      new rds.DatabaseInstance(stack, 'Instance', {
+        engine: rds.DatabaseInstanceEngine.mysql({ version: rds.MysqlEngineVersion.VER_8_0_19 }),
+        vpc,
+        backupTarget: rds.BackupTarget.REGION,
+      });
+
+      // THEN
+      Template.fromStack(stack).hasResourceProperties('AWS::RDS::DBInstance', {
+        BackupTarget: 'region',
+      });
+    });
+
+    test('backupTarget works with DatabaseInstanceFromSnapshot', () => {
+      // WHEN
+      new rds.DatabaseInstanceFromSnapshot(stack, 'Instance', {
+        engine: rds.DatabaseInstanceEngine.mysql({ version: rds.MysqlEngineVersion.VER_8_0_19 }),
+        vpc,
+        snapshotIdentifier: 'test-snapshot-id',
+        backupTarget: rds.BackupTarget.REGION,
+      });
+
+      // THEN
+      Template.fromStack(stack).hasResourceProperties('AWS::RDS::DBInstance', {
+        BackupTarget: 'region',
+      });
+    });
+
+    test('backupTarget works with DatabaseInstanceReadReplica', () => {
+      // GIVEN
+      const source = new rds.DatabaseInstance(stack, 'Source', {
+        engine: rds.DatabaseInstanceEngine.mysql({ version: rds.MysqlEngineVersion.VER_8_0_19 }),
+        vpc,
+      });
+
+      // WHEN
+      new rds.DatabaseInstanceReadReplica(stack, 'ReadReplica', {
+        sourceDatabaseInstance: source,
+        instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MICRO),
+        vpc,
+        backupTarget: rds.BackupTarget.LOCAL,
+      });
+
+      // THEN
+      // ReadReplica should have the backupTarget set
+      const template = Template.fromStack(stack);
+      template.hasResourceProperties('AWS::RDS::DBInstance', {
+        BackupTarget: 'local',
+        SourceDBInstanceIdentifier: {
+          'Fn::Join': [
+            '',
+            [
+              'arn:',
+              { Ref: 'AWS::Partition' },
+              ':rds:',
+              { Ref: 'AWS::Region' },
+              ':',
+              { Ref: 'AWS::AccountId' },
+              ':db:',
+              { Ref: 'Source71E471F1' },
+            ],
+          ],
+        },
+      });
+    });
+  });
 });
