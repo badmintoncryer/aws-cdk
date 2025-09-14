@@ -10,12 +10,12 @@ const stack = new Stack(app, 'cdk-instance-backup-target');
 
 const vpc = new ec2.Vpc(stack, 'Vpc');
 
-// For simplicity, get a public snapshot
 new rds.DatabaseInstanceFromSnapshot(stack, 'FromSnapshot', {
   clusterSnapshotIdentifier: SNAPSHOT_ARN,
   engine: rds.DatabaseInstanceEngine.postgres({ version: rds.PostgresEngineVersion.VER_16_6 }),
   instanceType: ec2.InstanceType.of(ec2.InstanceClass.BURSTABLE3, ec2.InstanceSize.MEDIUM),
   backupTarget: rds.BackupTarget.REGION,
+  allocatedStorage: 100,
   vpc,
   removalPolicy: RemovalPolicy.DESTROY,
 });
