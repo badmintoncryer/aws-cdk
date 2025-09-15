@@ -4,7 +4,7 @@ import { AccessLevel } from '../../aws-cloudfront';
 import * as iam from '../../aws-iam';
 import { IKey } from '../../aws-kms';
 import { IBucket } from '../../aws-s3';
-import { Annotations, Aws, Names, Stack, UnscopedValidationError } from '../../core';
+import { Annotations, Aws, Duration, Names, Stack, UnscopedValidationError } from '../../core';
 
 interface BucketPolicyAction {
   readonly action: string;
@@ -27,7 +27,16 @@ const KEY_ACTIONS: Record<string, string[]> = {
 /**
  * Properties for configuring a origin using a standard S3 bucket
  */
-export interface S3BucketOriginBaseProps extends cloudfront.OriginProps { }
+export interface S3BucketOriginBaseProps extends cloudfront.OriginProps {
+  /**
+   * Specifies how long, in seconds, CloudFront waits for a response from the origin.
+   * This is also known as the origin response timeout.
+   * Valid values are 1-120 seconds, inclusive.
+   *
+   * @default Duration.seconds(30)
+   */
+  readonly readTimeout?: Duration;
+}
 
 /**
  * Properties for configuring a S3 origin with OAC
@@ -84,7 +93,7 @@ export abstract class S3BucketOrigin extends cloudfront.OriginBase {
   /**
    * Create a S3 Origin with default S3 bucket settings (no origin access control)
    */
-  public static withBucketDefaults(bucket: IBucket, props?: cloudfront.OriginProps): cloudfront.IOrigin {
+  public static withBucketDefaults(bucket: IBucket, props?: S3BucketOriginBaseProps): cloudfront.IOrigin {
     return new class extends S3BucketOrigin {
       constructor() {
         super(bucket, { ...props });
@@ -92,8 +101,18 @@ export abstract class S3BucketOrigin extends cloudfront.OriginBase {
     }();
   }
 
+  protected readonly readTimeout?: Duration;
+
   constructor(bucket: IBucket, props?: S3BucketOriginBaseProps) {
     super(bucket.bucketRegionalDomainName, props);
+    this.readTimeout = props?.readTimeout;
+
+    if (this.readTimeout) {
+      const milliSeconds = this.readTimeout.toMilliseconds();
+      if (milliSeconds < Duration.seconds(1).toMilliseconds() || milliSeconds > Duration.seconds(120).toMilliseconds()) {
+        throw new UnscopedValidationError(`readTimeout must be between 1 and 120 seconds, got: ${milliSeconds / 1000}s.`);
+      }
+    }
   }
 
   /** @internal */
@@ -102,7 +121,10 @@ export abstract class S3BucketOrigin extends cloudfront.OriginBase {
   }
 
   protected renderS3OriginConfig(): cloudfront.CfnDistribution.S3OriginConfigProperty | undefined {
-    return { originAccessIdentity: '' };
+    return {
+      originAccessIdentity: '',
+      originReadTimeout: this.readTimeout?.toSeconds(),
+    };
   }
 }
 
@@ -265,6 +287,9 @@ class S3BucketOriginWithOAI extends S3BucketOrigin {
     if (!this.originAccessIdentity) {
       throw new UnscopedValidationError('Origin access identity cannot be undefined');
     }
-    return { originAccessIdentity: `origin-access-identity/cloudfront/${this.originAccessIdentity.originAccessIdentityId}` };
+    return {
+      originAccessIdentity: `origin-access-identity/cloudfront/${this.originAccessIdentity.originAccessIdentityId}`,
+      ...(this.readTimeout ? { originReadTimeout: this.readTimeout.toSeconds() } : {}),
+    };
   }
 }
