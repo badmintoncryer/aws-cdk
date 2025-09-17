@@ -536,6 +536,44 @@ Updates to bucket policies are eventually consistent. Therefore, removing OAI pe
 
 For more information, see [Migrating from origin access identity (OAI) to origin access control (OAC)](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html#migrate-from-oai-to-oac).
 
+### Configuring Origin Response Timeout
+
+You can configure how long CloudFront waits for a response from your S3 origin using the `readTimeout` property. This is also known as the origin response timeout. Valid values are 1-120 seconds, inclusive.
+
+```ts
+const myBucket = new s3.Bucket(this, 'myBucket');
+new cloudfront.Distribution(this, 'myDist', {
+  defaultBehavior: {
+    origin: origins.S3BucketOrigin.withOriginAccessControl(myBucket, {
+      readTimeout: Duration.seconds(60), // 60 second timeout
+    })
+  },
+});
+```
+
+The `readTimeout` property is supported by all S3BucketOrigin methods:
+
+```ts
+const myBucket = new s3.Bucket(this, 'myBucket');
+
+// With Origin Access Control (OAC)
+const oacOrigin = origins.S3BucketOrigin.withOriginAccessControl(myBucket, {
+  readTimeout: Duration.seconds(90),
+});
+
+// With Origin Access Identity (OAI)
+const oaiOrigin = origins.S3BucketOrigin.withOriginAccessIdentity(myBucket, {
+  readTimeout: Duration.seconds(45),
+});
+
+// With default bucket settings (no access control)
+const defaultOrigin = origins.S3BucketOrigin.withBucketDefaults(myBucket, {
+  readTimeout: Duration.seconds(30),
+});
+```
+
+If not specified, CloudFront uses its default timeout of 30 seconds.
+
 ### Adding Custom Headers
 
 You can configure CloudFront to add custom headers to the requests that it sends to your origin. These custom headers enable you to send and gather information from your origin that you don’t get with typical viewer requests. These headers can even be customized for each origin. CloudFront supports custom headers for both for custom and Amazon S3 origins.
