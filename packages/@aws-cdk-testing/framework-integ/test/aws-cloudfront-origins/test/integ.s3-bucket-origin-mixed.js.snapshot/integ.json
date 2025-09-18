@@ -1,0 +1,13 @@
+{
+  "version": "48.0.0",
+  "testCases": {
+    "s3-bucket-origin-mixed/DefaultTest": {
+      "stacks": [
+        "cloudfront-s3-bucket-origin-mixed"
+      ],
+      "assertionStack": "s3-bucket-origin-mixed/DefaultTest/DeployAssert",
+      "assertionStackName": "s3bucketoriginmixedDefaultTestDeployAssert024F5F23"
+    }
+  },
+  "minimumCliVersion": "2.1027.0"
+}
