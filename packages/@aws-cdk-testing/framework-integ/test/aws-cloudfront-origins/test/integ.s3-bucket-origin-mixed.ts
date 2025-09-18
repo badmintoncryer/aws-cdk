@@ -39,8 +39,7 @@ const s3OriginOai = origins.S3BucketOrigin.withOriginAccessIdentity(bucketOai, {
   readTimeout: Duration.seconds(60),
 });
 
-// Create distribution with multiple origins and behaviors
-const distribution = new cloudfront.Distribution(stack, 'Distribution', {
+new cloudfront.Distribution(stack, 'Distribution', {
   defaultBehavior: {
     origin: s3OriginDefault,
   },

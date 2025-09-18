@@ -968,6 +968,17 @@ describe('S3BucketOrigin', () => {
         origins.S3BucketOrigin.withOriginAccessControl(bucket, { readTimeout: Duration.seconds(readTimeout) });
       }).toThrow(`readTimeout must be between 1 and 120 seconds, got: ${readTimeout}s.`);
     });
+
+    test('throw error for configuring readTimeout less than responseCompletionTimeout value', () => {
+      const stack = new Stack();
+      const bucket = new s3.Bucket(stack, 'MyBucket');
+      expect(() => {
+        origins.S3BucketOrigin.withOriginAccessControl(bucket, {
+          responseCompletionTimeout: Duration.seconds(30),
+          readTimeout: Duration.seconds(60),
+        });
+      }).toThrow('responseCompletionTimeout must be equal to or greater than readTimeout (60s), got: 30s.');
+    });
   });
 
   describe('withOriginAccessIdentity', () => {
@@ -1386,6 +1397,17 @@ describe('S3BucketOrigin', () => {
         origins.S3BucketOrigin.withOriginAccessIdentity(bucket, { readTimeout: Duration.seconds(readTimeout) });
       }).toThrow(`readTimeout must be between 1 and 120 seconds, got: ${readTimeout}s.`);
     });
+
+    test('throw error for configuring readTimeout less than responseCompletionTimeout value', () => {
+      const stack = new Stack();
+      const bucket = new s3.Bucket(stack, 'MyBucket');
+      expect(() => {
+        origins.S3BucketOrigin.withOriginAccessIdentity(bucket, {
+          responseCompletionTimeout: Duration.seconds(30),
+          readTimeout: Duration.seconds(60),
+        });
+      }).toThrow('responseCompletionTimeout must be equal to or greater than readTimeout (60s), got: 30s.');
+    });
   });
 
   describe('withBucketDefaults', () => {
@@ -1430,6 +1452,17 @@ describe('S3BucketOrigin', () => {
       expect(() => {
         origins.S3BucketOrigin.withBucketDefaults(bucket, { readTimeout: Duration.seconds(readTimeout) });
       }).toThrow(`readTimeout must be between 1 and 120 seconds, got: ${readTimeout}s.`);
+    });
+
+    test('throw error for configuring readTimeout less than responseCompletionTimeout value', () => {
+      const stack = new Stack();
+      const bucket = new s3.Bucket(stack, 'MyBucket');
+      expect(() => {
+        origins.S3BucketOrigin.withBucketDefaults(bucket, {
+          responseCompletionTimeout: Duration.seconds(30),
+          readTimeout: Duration.seconds(60),
+        });
+      }).toThrow('responseCompletionTimeout must be equal to or greater than readTimeout (60s), got: 30s.');
     });
   });
 });

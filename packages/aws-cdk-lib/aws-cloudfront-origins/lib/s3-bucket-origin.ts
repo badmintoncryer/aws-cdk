@@ -106,6 +106,7 @@ export abstract class S3BucketOrigin extends cloudfront.OriginBase {
   constructor(bucket: IBucket, props?: S3BucketOriginBaseProps) {
     super(bucket.bucketRegionalDomainName, props);
     this.readTimeout = props?.readTimeout;
+    this.validateResponseCompletionTimeoutWithReadTimeout(props?.responseCompletionTimeout, this.readTimeout);
 
     if (this.readTimeout) {
       const milliSeconds = this.readTimeout.toMilliseconds();
