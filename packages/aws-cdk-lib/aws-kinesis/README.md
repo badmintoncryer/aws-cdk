@@ -8,6 +8,8 @@ intake and aggregation.
 ## Table Of Contents
 
 - [Streams](#streams)
+  - [Stream Mode](#stream-mode)
+  - [Warm Throughput](#warm-throughput)
   - [Encryption](#encryption)
   - [Import](#import)
   - [Permission Grants](#permission-grants)
@@ -45,6 +47,39 @@ new kinesis.Stream(this, 'MyFirstStream', {
   retentionPeriod: Duration.hours(48),
 });
 ```
+
+### Stream Mode
+
+Kinesis streams support two capacity modes: **Provisioned** and **On-Demand**.
+
+- **Provisioned mode**: You specify the number of shards for the data stream. The total capacity is the sum of the capacities of its shards.
+- **On-Demand mode**: Kinesis Data Streams automatically manages the shards to provide the necessary throughput.
+
+By default, streams are created in Provisioned mode. You can specify On-Demand mode using the `streamMode` property:
+
+```ts
+new kinesis.Stream(this, 'MyOnDemandStream', {
+  streamMode: kinesis.StreamMode.ON_DEMAND,
+});
+```
+
+Note: When using On-Demand mode, you cannot specify `shardCount`.
+
+### Warm Throughput
+
+For On-Demand streams, you can configure warm throughput to have instantly available throughput capacity for write operations without waiting for scaling.
+This is useful when you expect traffic spikes and want to proactively prepare your stream for peak traffic events.
+
+```ts
+new kinesis.Stream(this, 'MyWarmThroughputStream', {
+  streamMode: kinesis.StreamMode.ON_DEMAND,
+  warmThroughput: Size.mebibytes(10), // 10 MiB/s
+});
+```
+
+The `warmThroughput` property specifies the target warm throughput in MiB/s. This property is only applicable for On-Demand streams.
+
+For more information about warm throughput, see [Amazon Kinesis Data Streams On-demand Advantage](https://docs.aws.amazon.com/streams/latest/dev/on-demand-advantage.html).
 
 ### Encryption
 

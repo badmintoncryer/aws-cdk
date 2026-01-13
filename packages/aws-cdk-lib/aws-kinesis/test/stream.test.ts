@@ -1,7 +1,7 @@
 import { Match, Template } from '../../assertions';
 import * as iam from '../../aws-iam';
 import * as kms from '../../aws-kms';
-import { App, Duration, Stack, CfnParameter, RemovalPolicy, CfnDeletionPolicy } from '../../core';
+import { App, Duration, Stack, CfnParameter, RemovalPolicy, CfnDeletionPolicy, Size } from '../../core';
 import { ShardLevelMetrics, Stream, StreamEncryption, StreamMode } from '../lib';
 
 describe('Kinesis data streams', () => {
@@ -1425,6 +1425,44 @@ describe('Kinesis data streams', () => {
           },
         ],
       },
+    });
+  });
+
+  describe('warmThroughput', () => {
+    test('can specify warmThroughput for ON_DEMAND stream', () => {
+      const stack = new Stack();
+      new Stream(stack, 'MyStream', {
+        streamMode: StreamMode.ON_DEMAND,
+        warmThroughput: Size.mebibytes(10),
+      });
+
+      Template.fromStack(stack).hasResourceProperties('AWS::Kinesis::Stream', {
+        StreamModeDetails: {
+          StreamMode: StreamMode.ON_DEMAND,
+        },
+        WarmThroughputMiBps: 10,
+      });
+    });
+
+    test('throws when using warmThroughput with PROVISIONED streamMode', () => {
+      const stack = new Stack();
+
+      expect(() => {
+        new Stream(stack, 'MyStream', {
+          streamMode: StreamMode.PROVISIONED,
+          warmThroughput: Size.mebibytes(10),
+        });
+      }).toThrow('warmThroughput can only be specified for ON_DEMAND streams');
+    });
+
+    test('throws when using warmThroughput with default (PROVISIONED) streamMode', () => {
+      const stack = new Stack();
+
+      expect(() => {
+        new Stream(stack, 'MyStream', {
+          warmThroughput: Size.mebibytes(10),
+        });
+      }).toThrow('warmThroughput can only be specified for ON_DEMAND streams');
     });
   });
 });

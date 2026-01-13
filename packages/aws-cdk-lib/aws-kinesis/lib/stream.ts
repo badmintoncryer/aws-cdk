@@ -5,7 +5,7 @@ import { ResourcePolicy } from './resource-policy';
 import * as cloudwatch from '../../aws-cloudwatch';
 import * as iam from '../../aws-iam';
 import * as kms from '../../aws-kms';
-import { ArnFormat, Aws, CfnCondition, Duration, Fn, IResolvable, IResource, RemovalPolicy, Resource, ResourceProps, Stack, Token, ValidationError } from '../../core';
+import { ArnFormat, Aws, CfnCondition, Duration, Fn, IResolvable, IResource, RemovalPolicy, Resource, ResourceProps, Size, Stack, Token, ValidationError } from '../../core';
 import { addConstructMetadata } from '../../core/lib/metadata-resource';
 import { propertyInjectable } from '../../core/lib/prop-injectable';
 import { IStreamRef, StreamReference } from '../../interfaces/generated/aws-kinesis-interfaces.generated';
@@ -835,6 +835,20 @@ export interface StreamProps {
   readonly streamMode?: StreamMode;
 
   /**
+   * The target warm throughput that the stream should be scaled to handle.
+   *
+   * This represents the throughput capacity that will be immediately available
+   * for write operations without waiting for scaling.
+   *
+   * This property is only applicable for ON_DEMAND streams.
+   *
+   * @see https://docs.aws.amazon.com/kinesis/latest/APIReference/API_WarmThroughput.html
+   *
+   * @default - No warm throughput specified
+   */
+  readonly warmThroughput?: Size;
+
+  /**
    * Policy to apply when the stream is removed from the stack.
    *
    * @default RemovalPolicy.RETAIN
@@ -918,6 +932,10 @@ export class Stream extends StreamBase {
       shardCount = 1;
     }
 
+    if (props.warmThroughput !== undefined && streamMode !== StreamMode.ON_DEMAND) {
+      throw new ValidationError('warmThroughput can only be specified for ON_DEMAND streams', this);
+    }
+
     const retentionPeriodHours = props.retentionPeriod?.toHours() ?? 24;
     if (!Token.isUnresolved(retentionPeriodHours)) {
       if (retentionPeriodHours < 24 || retentionPeriodHours > 8760) {
@@ -944,6 +962,7 @@ export class Stream extends StreamBase {
       shardCount,
       streamEncryption,
       desiredShardLevelMetrics: props.shardLevelMetrics,
+      warmThroughputMiBps: props.warmThroughput?.toMebibytes(),
       ...(props.streamMode !== undefined
         ? {
           streamModeDetails: { streamMode: props.streamMode },
