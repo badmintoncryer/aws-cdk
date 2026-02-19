@@ -1,0 +1,193 @@
+{
+  "resources": {
+    "Runtime": {
+      "hasResourcePolicy": false,
+      "grants": {
+        "invoke": {
+          "actions": ["bedrock-agentcore:InvokeAgentRuntime"],
+          "arnFormat": ["${runtimeArn}", "${runtimeArn}/*"],
+          "docSummary": "Grant permissions to invoke this agent runtime"
+        },
+        "invokeForUser": {
+          "actions": ["bedrock-agentcore:InvokeAgentRuntimeForUser"],
+          "arnFormat": ["${runtimeArn}", "${runtimeArn}/*"],
+          "docSummary": "Grant permissions to invoke this runtime on behalf of a user"
+        },
+        "invokeAll": {
+          "actions": ["bedrock-agentcore:InvokeAgentRuntime", "bedrock-agentcore:InvokeAgentRuntimeForUser"],
+          "arnFormat": ["${runtimeArn}", "${runtimeArn}/*"],
+          "docSummary": "Grant permissions to invoke this runtime both directly and on behalf of users"
+        }
+      }
+    },
+    "Gateway": {
+      "hasResourcePolicy": false,
+      "grants": {
+        "invoke": {
+          "actions": ["bedrock-agentcore:InvokeGateway"],
+          "docSummary": "Grant permissions to invoke this gateway"
+        },
+        "read": {
+          "actions": [
+            "bedrock-agentcore:GetGateway",
+            "bedrock-agentcore:GetGatewayTarget"
+          ],
+          "docSummary": "Grant permissions to read gateway configuration"
+        },
+        "manage": {
+          "actions": [
+            "bedrock-agentcore:CreateGateway",
+            "bedrock-agentcore:CreateGatewayTarget",
+            "bedrock-agentcore:UpdateGateway",
+            "bedrock-agentcore:UpdateGatewayTarget",
+            "bedrock-agentcore:DeleteGateway",
+            "bedrock-agentcore:DeleteGatewayTarget"
+          ],
+          "docSummary": "Grant permissions to manage gateway resources"
+        }
+      }
+    },
+    "Memory": {
+      "hasResourcePolicy": false,
+      "grants": {
+        "write": {
+          "actions": ["bedrock-agentcore:CreateEvent"],
+          "docSummary": "Grant permissions to write to short-term memory"
+        },
+        "read": {
+          "actions": [
+            "bedrock-agentcore:GetEvent",
+            "bedrock-agentcore:ListEvents",
+            "bedrock-agentcore:GetMemoryRecord",
+            "bedrock-agentcore:RetrieveMemoryRecords",
+            "bedrock-agentcore:ListMemoryRecords",
+            "bedrock-agentcore:ListActors",
+            "bedrock-agentcore:ListSessions"
+          ],
+          "docSummary": "Grant permissions to read memory contents (STM and LTM)"
+        },
+        "readShortTermMemory": {
+          "actions": [
+            "bedrock-agentcore:GetEvent",
+            "bedrock-agentcore:ListEvents",
+            "bedrock-agentcore:ListActors",
+            "bedrock-agentcore:ListSessions"
+          ],
+          "docSummary": "Grant permissions to read short-term memory contents"
+        },
+        "readLongTermMemory": {
+          "actions": [
+            "bedrock-agentcore:GetMemoryRecord",
+            "bedrock-agentcore:RetrieveMemoryRecords",
+            "bedrock-agentcore:ListMemoryRecords",
+            "bedrock-agentcore:ListActors",
+            "bedrock-agentcore:ListSessions"
+          ],
+          "docSummary": "Grant permissions to read long-term memory contents"
+        },
+        "delete": {
+          "actions": [
+            "bedrock-agentcore:DeleteEvent",
+            "bedrock-agentcore:DeleteMemoryRecord"
+          ],
+          "docSummary": "Grant permissions to delete memory contents (STM and LTM)"
+        },
+        "deleteShortTermMemory": {
+          "actions": ["bedrock-agentcore:DeleteEvent"],
+          "docSummary": "Grant permissions to delete short-term memory contents"
+        },
+        "deleteLongTermMemory": {
+          "actions": ["bedrock-agentcore:DeleteMemoryRecord"],
+          "docSummary": "Grant permissions to delete long-term memory contents"
+        },
+        "admin": {
+          "actions": [
+            "bedrock-agentcore:CreateMemory",
+            "bedrock-agentcore:GetMemory",
+            "bedrock-agentcore:DeleteMemory",
+            "bedrock-agentcore:UpdateMemory"
+          ],
+          "docSummary": "Grant control plane permissions to manage the memory"
+        },
+        "fullAccess": {
+          "actions": [
+            "bedrock-agentcore:CreateEvent",
+            "bedrock-agentcore:GetEvent",
+            "bedrock-agentcore:ListEvents",
+            "bedrock-agentcore:DeleteEvent",
+            "bedrock-agentcore:GetMemoryRecord",
+            "bedrock-agentcore:RetrieveMemoryRecords",
+            "bedrock-agentcore:ListMemoryRecords",
+            "bedrock-agentcore:DeleteMemoryRecord",
+            "bedrock-agentcore:ListActors",
+            "bedrock-agentcore:ListSessions",
+            "bedrock-agentcore:CreateMemory",
+            "bedrock-agentcore:GetMemory",
+            "bedrock-agentcore:DeleteMemory",
+            "bedrock-agentcore:UpdateMemory"
+          ],
+          "docSummary": "Grant full access permissions to this memory"
+        }
+      }
+    },
+    "BrowserCustom": {
+      "hasResourcePolicy": false,
+      "grants": {
+        "read": {
+          "actions": [
+            "bedrock-agentcore:GetBrowser",
+            "bedrock-agentcore:GetBrowserSession",
+            "bedrock-agentcore:ListBrowserSessions"
+          ],
+          "docSummary": "Grant permissions to read browser information"
+        },
+        "use": {
+          "actions": [
+            "bedrock-agentcore:StartBrowserSession",
+            "bedrock-agentcore:StopBrowserSession",
+            "bedrock-agentcore:UpdateBrowserStream"
+          ],
+          "docSummary": "Grant permissions to use browser functionality"
+        }
+      }
+    },
+    "CodeInterpreterCustom": {
+      "hasResourcePolicy": false,
+      "grants": {
+        "read": {
+          "actions": [
+            "bedrock-agentcore:GetCodeInterpreter",
+            "bedrock-agentcore:GetCodeInterpreterSession",
+            "bedrock-agentcore:ListCodeInterpreterSessions"
+          ],
+          "docSummary": "Grant permissions to read code interpreter information"
+        },
+        "use": {
+          "actions": [
+            "bedrock-agentcore:StartCodeInterpreterSession",
+            "bedrock-agentcore:InvokeCodeInterpreter",
+            "bedrock-agentcore:StopCodeInterpreterSession"
+          ],
+          "docSummary": "Grant permissions to use code interpreter functionality"
+        },
+        "invoke": {
+          "actions": ["bedrock-agentcore:InvokeCodeInterpreter"],
+          "docSummary": "Grant permissions to invoke code interpreter"
+        }
+      }
+    },
+    "WorkloadIdentity": {
+      "hasResourcePolicy": false,
+      "grants": {
+        "getToken": {
+          "actions": [
+            "bedrock-agentcore:GetWorkloadAccessToken",
+            "bedrock-agentcore:GetWorkloadAccessTokenForJWT",
+            "bedrock-agentcore:GetWorkloadAccessTokenForUserId"
+          ],
+          "docSummary": "Grant permissions to obtain workload access tokens"
+        }
+      }
+    }
+  }
+}

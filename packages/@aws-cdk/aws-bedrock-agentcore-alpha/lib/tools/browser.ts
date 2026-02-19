@@ -14,6 +14,7 @@ import {
 } from 'aws-cdk-lib';
 import * as agent_core from 'aws-cdk-lib/aws-bedrockagentcore';
 import type { BrowserCustomReference, IBrowserCustomRef } from 'aws-cdk-lib/aws-bedrockagentcore';
+import { BrowserCustomGrants } from '../bedrock-agentcore-grants.generated';
 import type {
   DimensionsMap,
   MetricOptions,
@@ -137,6 +138,11 @@ export interface IBrowserCustom extends IResource, iam.IGrantable, ec2.IConnecta
    */
   grantUse(grantee: iam.IGrantable): iam.Grant;
 
+  /**
+   * Collection of grant methods for this browser
+   */
+  readonly grants: BrowserCustomGrants;
+
   // ------------------------------------------------------
   // Metrics
   // ------------------------------------------------------
@@ -219,6 +225,11 @@ export abstract class BrowserCustomBase extends Resource implements IBrowserCust
    * The principal to grant permissions to
    */
   public abstract readonly grantPrincipal: iam.IPrincipal;
+
+  /**
+   * Collection of grant methods for this browser
+   */
+  public readonly grants: BrowserCustomGrants = BrowserCustomGrants.fromBrowserCustom(this);
 
   /**
    * A reference to a BrowserCustom resource.
@@ -307,10 +318,7 @@ export abstract class BrowserCustomBase extends Resource implements IBrowserCust
    * @returns An IAM Grant object representing the granted permissions
    */
   public grantUse(grantee: iam.IGrantable): iam.Grant {
-    return this.grant(
-      grantee,
-      ...perms.BROWSER_USE_PERMS,
-    );
+    return this.grants.use(grantee);
   }
 
   // ------------------------------------------------------

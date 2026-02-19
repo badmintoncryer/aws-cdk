@@ -14,6 +14,7 @@
 import type { IResource, ResourceProps } from 'aws-cdk-lib';
 import { Resource } from 'aws-cdk-lib';
 import type { IRuntimeRef, RuntimeReference } from 'aws-cdk-lib/aws-bedrockagentcore';
+import { RuntimeGrants } from '../bedrock-agentcore-grants.generated';
 import type {
   DimensionsMap,
   MetricOptions,
@@ -26,7 +27,6 @@ import {
 import type * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import type { Construct } from 'constructs';
-import { RUNTIME_INVOKE_PERMS, RUNTIME_INVOKE_USER_PERMS } from './perms';
 import { ValidationError } from './validation-helpers';
 
 /******************************************************************************
@@ -88,6 +88,11 @@ export interface IBedrockAgentRuntime extends IResource, iam.IGrantable, ec2.ICo
    * @example "2024-01-15T14:45:00Z"
    */
   readonly lastUpdatedAt?: string;
+
+  /**
+   * Collection of grant methods for this runtime
+   */
+  readonly grants: RuntimeGrants;
 
   // ------------------------------------------------------
   // Metrics
@@ -206,6 +211,11 @@ export abstract class RuntimeBase extends Resource implements IBedrockAgentRunti
   public abstract readonly grantPrincipal: iam.IPrincipal;
 
   /**
+   * Collection of grant methods for this runtime
+   */
+  public readonly grants: RuntimeGrants = RuntimeGrants.fromRuntime(this);
+
+  /**
    * A reference to a Runtime resource.
    */
   public get runtimeRef(): RuntimeReference {
@@ -274,11 +284,7 @@ export abstract class RuntimeBase extends Resource implements IBedrockAgentRunti
    * @param grantee The principal to grant access to
    */
   public grantInvokeRuntime(grantee: iam.IGrantable): iam.Grant {
-    return iam.Grant.addToPrincipal({
-      grantee,
-      actions: RUNTIME_INVOKE_PERMS,
-      resourceArns: [this.runtimeRef.agentRuntimeArn, `${this.runtimeRef.agentRuntimeArn}/*`], // * is needed because it invoke the endpoint as subresource
-    });
+    return this.grants.invoke(grantee);
   }
 
   /**
@@ -291,11 +297,7 @@ export abstract class RuntimeBase extends Resource implements IBedrockAgentRunti
    * @param grantee The principal to grant access to
    */
   public grantInvokeRuntimeForUser(grantee: iam.IGrantable): iam.Grant {
-    return iam.Grant.addToPrincipal({
-      grantee,
-      actions: RUNTIME_INVOKE_USER_PERMS,
-      resourceArns: [this.runtimeRef.agentRuntimeArn, `${this.runtimeRef.agentRuntimeArn}/*`],
-    });
+    return this.grants.invokeForUser(grantee);
   }
 
   /**
@@ -307,11 +309,7 @@ export abstract class RuntimeBase extends Resource implements IBedrockAgentRunti
    * @param grantee The principal to grant access to
    */
   public grantInvoke(grantee: iam.IGrantable): iam.Grant {
-    return iam.Grant.addToPrincipal({
-      grantee,
-      actions: [...RUNTIME_INVOKE_PERMS, ...RUNTIME_INVOKE_USER_PERMS],
-      resourceArns: [this.runtimeRef.agentRuntimeArn, `${this.runtimeRef.agentRuntimeArn}/*`],
-    });
+    return this.grants.invokeAll(grantee);
   }
 
   // ------------------------------------------------------

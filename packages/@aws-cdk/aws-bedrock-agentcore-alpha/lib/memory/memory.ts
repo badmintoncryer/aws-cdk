@@ -15,6 +15,7 @@ import type { IResource, ResourceProps } from 'aws-cdk-lib';
 import { Arn, ArnFormat, Duration, Lazy, Resource, Token, Names } from 'aws-cdk-lib';
 import type { CfnMemoryProps, IMemoryRef, MemoryReference } from 'aws-cdk-lib/aws-bedrockagentcore';
 import { CfnMemory } from 'aws-cdk-lib/aws-bedrockagentcore';
+import { MemoryGrants } from '../bedrock-agentcore-grants.generated';
 import type {
   DimensionsMap,
   MetricOptions,
@@ -31,7 +32,6 @@ import { propertyInjectable } from 'aws-cdk-lib/core/lib/prop-injectable';
 import type { IConstruct, Construct } from 'constructs';
 // Internal Libs
 import type { IMemoryStrategy } from './memory-strategy';
-import { MemoryPerms } from './perms';
 import { validateFieldPattern, validateStringFieldLength, throwIfInvalid } from './validation-helpers';
 
 /******************************************************************************
@@ -112,6 +112,10 @@ export interface IMemory extends IResource, iam.IGrantable, IMemoryRef {
    * @attribute
    */
   readonly createdAt?: string;
+  /**
+   * Collection of grant methods for this memory
+   */
+  readonly grants: MemoryGrants;
   /**
    * Grant the given principal identity permissions to perform actions on this memory.
    */
@@ -204,6 +208,11 @@ export abstract class MemoryBase extends Resource implements IMemory {
   public abstract readonly grantPrincipal: iam.IPrincipal;
 
   /**
+   * Collection of grant methods for this memory
+   */
+  public readonly grants: MemoryGrants = MemoryGrants.fromMemory(this);
+
+  /**
    * A reference to a Memory resource.
    */
   public get memoryRef(): MemoryReference {
@@ -243,7 +252,7 @@ export abstract class MemoryBase extends Resource implements IMemory {
    * @returns An IAM Grant object representing the granted permissions
    */
   grantWrite(grantee: iam.IGrantable): iam.Grant {
-    return this.grant(grantee, ...MemoryPerms.STM.WRITE_PERMS);
+    return this.grants.write(grantee);
   }
   /**
    * Grant the given principal identity permissions to read the contents of this memory.
@@ -261,7 +270,7 @@ export abstract class MemoryBase extends Resource implements IMemory {
    * @returns An IAM Grant object representing the granted permissions
    */
   grantRead(grantee: iam.IGrantable): iam.Grant {
-    return this.grant(grantee, ...MemoryPerms.READ_PERMS);
+    return this.grants.read(grantee);
   }
   /**
    * Grant the given principal identity permissions to read the Short-Term Memory (STM) contents of this memory.
@@ -277,7 +286,7 @@ export abstract class MemoryBase extends Resource implements IMemory {
    * @returns An IAM Grant object representing the granted permissions
    */
   grantReadShortTermMemory(grantee: iam.IGrantable): iam.Grant {
-    return this.grant(grantee, ...MemoryPerms.STM.READ_PERMS);
+    return this.grants.readShortTermMemory(grantee);
   }
   /**
    * Grant the given principal identity permissions to read the Long-Term Memory (LTM) contents of this memory.
@@ -294,7 +303,7 @@ export abstract class MemoryBase extends Resource implements IMemory {
    * @returns An IAM Grant object representing the granted permissions
    */
   grantReadLongTermMemory(grantee: iam.IGrantable): iam.Grant {
-    return this.grant(grantee, ...MemoryPerms.LTM.READ_PERMS);
+    return this.grants.readLongTermMemory(grantee);
   }
   /**
    * Grant the given principal identity permissions to delete content on this memory.
@@ -310,7 +319,7 @@ export abstract class MemoryBase extends Resource implements IMemory {
    * @returns An IAM Grant object representing the granted permissions
    */
   grantDelete(grantee: iam.IGrantable): iam.Grant {
-    return this.grant(grantee, ...MemoryPerms.DELETE_PERMS);
+    return this.grants.delete(grantee);
   }
   /**
    * Grant the given principal identity permissions to delete Short-Term Memory (STM) content on this memory.
@@ -323,7 +332,7 @@ export abstract class MemoryBase extends Resource implements IMemory {
    * @returns An IAM Grant object representing the granted permissions
    */
   grantDeleteShortTermMemory(grantee: iam.IGrantable): iam.Grant {
-    return this.grant(grantee, ...MemoryPerms.STM.DELETE_PERMS);
+    return this.grants.deleteShortTermMemory(grantee);
   }
   /**
    * Grant the given principal identity permissions to delete Long-Term Memory (LTM) content on this memory.
@@ -336,7 +345,7 @@ export abstract class MemoryBase extends Resource implements IMemory {
    * @returns An IAM Grant object representing the granted permissions
    */
   grantDeleteLongTermMemory(grantee: iam.IGrantable): iam.Grant {
-    return this.grant(grantee, ...MemoryPerms.LTM.DELETE_PERMS);
+    return this.grants.deleteLongTermMemory(grantee);
   }
   /**
    * Grant the given principal identity permissions to manage the control plane of this memory.
@@ -352,7 +361,7 @@ export abstract class MemoryBase extends Resource implements IMemory {
    * @returns An IAM Grant object representing the granted permissions
    */
   grantAdmin(grantee: iam.IGrantable): iam.Grant {
-    return this.grant(grantee, ...MemoryPerms.ADMIN_PERMS);
+    return this.grants.admin(grantee);
   }
   /**
    * Grant the given principal identity permissions to do every action on this memory.
@@ -376,7 +385,7 @@ export abstract class MemoryBase extends Resource implements IMemory {
    * @returns An IAM Grant object representing the granted permissions
    */
   grantFullAccess(grantee: iam.IGrantable): iam.Grant {
-    return this.grant(grantee, ...MemoryPerms.FULL_ACCESS_PERMS);
+    return this.grants.fullAccess(grantee);
   }
 
   // ------------------------------------------------------

@@ -66,3 +66,8 @@ export * from './gateway/targets/target-configuration';
 export * from './gateway/targets/schema/base-schema';
 export * from './gateway/targets/schema/api-schema';
 export * from './gateway/targets/schema/tool-schema';
+
+// ===================================
+// Grants
+// ===================================
+export * from './bedrock-agentcore-grants.generated';

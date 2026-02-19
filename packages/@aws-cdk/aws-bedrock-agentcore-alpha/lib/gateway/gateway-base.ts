@@ -1,6 +1,7 @@
 import type { IResource, ResourceProps } from 'aws-cdk-lib';
 import { Resource } from 'aws-cdk-lib';
 import type { GatewayReference, IGatewayRef } from 'aws-cdk-lib/aws-bedrockagentcore';
+import { GatewayGrants } from '../bedrock-agentcore-grants.generated';
 import type { DimensionsMap, MetricOptions, MetricProps } from 'aws-cdk-lib/aws-cloudwatch';
 import { Metric, Stats } from 'aws-cdk-lib/aws-cloudwatch';
 import * as iam from 'aws-cdk-lib/aws-iam';
@@ -8,7 +9,7 @@ import type * as kms from 'aws-cdk-lib/aws-kms';
 import type { Construct } from 'constructs';
 // Internal imports
 import type { IGatewayAuthorizerConfig } from './inbound-auth/authorizer';
-import { GATEWAY_GET_PERMS, GATEWAY_LIST_PERMS, GATEWAY_MANAGE_PERMS, GATEWAY_INVOKE_PERMS } from './perms';
+import { GATEWAY_GET_PERMS, GATEWAY_LIST_PERMS } from './perms';
 import type { IGatewayProtocolConfig } from './protocol';
 
 /******************************************************************************
@@ -109,6 +110,11 @@ export interface IGateway extends IResource, IGatewayRef {
    * @attribute
    */
   readonly updatedAt?: string;
+
+  /**
+   * Collection of grant methods for this gateway
+   */
+  readonly grants: GatewayGrants;
 
   /**
    * Grants IAM actions to the IAM Principal
@@ -246,6 +252,11 @@ export abstract class GatewayBase extends Resource implements IGateway {
   public abstract readonly updatedAt?: string;
 
   /**
+   * Collection of grant methods for this gateway
+   */
+  public readonly grants: GatewayGrants = GatewayGrants.fromGateway(this);
+
+  /**
    * A reference to a Gateway resource.
    */
   public get gatewayRef(): GatewayReference {
@@ -305,7 +316,7 @@ export abstract class GatewayBase extends Resource implements IGateway {
    * @param grantee The principal to grant manage permissions to
    */
   public grantManage(grantee: iam.IGrantable): iam.Grant {
-    return this.grant(grantee, ...GATEWAY_MANAGE_PERMS);
+    return this.grants.manage(grantee);
   }
 
   /**
@@ -316,7 +327,7 @@ export abstract class GatewayBase extends Resource implements IGateway {
    * @param grantee The principal to grant invoke permissions to
    */
   public grantInvoke(grantee: iam.IGrantable): iam.Grant {
-    return this.grant(grantee, ...GATEWAY_INVOKE_PERMS);
+    return this.grants.invoke(grantee);
   }
 
   // ------------------------------------------------------

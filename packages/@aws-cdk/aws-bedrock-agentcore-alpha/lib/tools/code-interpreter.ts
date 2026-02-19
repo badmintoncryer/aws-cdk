@@ -12,6 +12,7 @@ import {
 } from 'aws-cdk-lib';
 import * as agent_core from 'aws-cdk-lib/aws-bedrockagentcore';
 import type { ICodeInterpreterCustomRef, CodeInterpreterCustomReference } from 'aws-cdk-lib/aws-bedrockagentcore';
+import { CodeInterpreterCustomGrants } from '../bedrock-agentcore-grants.generated';
 import type {
   DimensionsMap,
   MetricOptions,
@@ -116,6 +117,11 @@ export interface ICodeInterpreterCustom extends IResource, iam.IGrantable, ec2.I
    */
   grantUse(grantee: iam.IGrantable): iam.Grant;
 
+  /**
+   * Collection of grant methods for this code interpreter
+   */
+  readonly grants: CodeInterpreterCustomGrants;
+
   // ------------------------------------------------------
   // Metrics
   // ------------------------------------------------------
@@ -183,6 +189,11 @@ export abstract class CodeInterpreterCustomBase extends Resource implements ICod
    * The principal to grant permissions to
    */
   public abstract readonly grantPrincipal: iam.IPrincipal;
+
+  /**
+   * Collection of grant methods for this code interpreter
+   */
+  public readonly grants: CodeInterpreterCustomGrants = CodeInterpreterCustomGrants.fromCodeInterpreterCustom(this);
 
   /**
    * A reference to a CodeInterpreterCustom resource.
@@ -271,10 +282,7 @@ export abstract class CodeInterpreterCustomBase extends Resource implements ICod
    * @returns An IAM Grant object representing the granted permissions
    */
   public grantUse(grantee: iam.IGrantable): iam.Grant {
-    return this.grant(
-      grantee,
-      ...perms.CODE_INTERPRETER_USE_PERMS,
-    );
+    return this.grants.use(grantee);
   }
 
   /**
@@ -289,7 +297,7 @@ export abstract class CodeInterpreterCustomBase extends Resource implements ICod
    * - resourceArns: [this.codeInterpreterArn]
    */
   public grantInvoke(grantee: iam.IGrantable): iam.Grant {
-    return this.grant(grantee, ...perms.CODE_INTERPRETER_INVOKE_PERMS);
+    return this.grants.invoke(grantee);
   }
 
   // ------------------------------------------------------
