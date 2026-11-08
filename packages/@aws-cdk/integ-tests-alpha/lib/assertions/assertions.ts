@@ -60,7 +60,7 @@ export class EqualsAssertion extends Construct {
       },
       resourceType: ASSERT_RESOURCE_TYPE,
     });
-    this.result = resource.getAttString('data');
+    this.result = resource.getAttString('assertion');
 
     new CfnOutput(this, 'AssertionResults', {
       value: this.result,

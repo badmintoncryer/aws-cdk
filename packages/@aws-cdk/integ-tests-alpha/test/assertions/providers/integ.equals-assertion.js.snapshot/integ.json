@@ -1,0 +1,14 @@
+{
+  "version": "55.0.0",
+  "testCases": {
+    "EqualsAssertionTest/DefaultTest": {
+      "stacks": [
+        "EqualsAssertion"
+      ],
+      "assertionStack": "EqualsAssertionTest/DefaultTest/DeployAssert",
+      "assertionStackName": "EqualsAssertionTestDefaultTestDeployAssertDA0EC83D"
+    }
+  },
+  "enableLookups": true,
+  "minimumCliVersion": "2.1147.0"
+}

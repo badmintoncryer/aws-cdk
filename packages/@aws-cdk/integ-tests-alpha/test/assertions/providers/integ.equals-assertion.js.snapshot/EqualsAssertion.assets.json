@@ -1,0 +1,20 @@
+{
+  "version": "55.0.0",
+  "files": {
+    "d9374917f0debf6f28b11920e8e4f98d4b378ff00c73cb12869874fbc9a8cb88": {
+      "displayName": "EqualsAssertion Template",
+      "source": {
+        "path": "EqualsAssertion.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "current_account-current_region-b33e61a8": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "d9374917f0debf6f28b11920e8e4f98d4b378ff00c73cb12869874fbc9a8cb88.json",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

@@ -24,7 +24,10 @@ export async function handler(event: AWSLambda.CloudFormationCustomResourceEvent
     if ('stateMachineArn' in event.ResourceProperties) {
       console.info('Found "stateMachineArn", waiter statemachine started');
       return;
-    } else if ('expected' in event.ResourceProperties) {
+    } else if ('expected' in event.ResourceProperties && !event.ResourceType.startsWith(types.ASSERT_RESOURCE_TYPE)) {
+      // An API call with an expectation: test the response of the call. An
+      // EqualsAssertion also has `expected`, but its handler has already compared
+      // `actual` and `expected`, so it is responded to below with its own result.
       console.info('Found "expected", testing assertions');
       const actualPath = event.ResourceProperties.actualPath;
       // if we are providing a path to make the assertion at, that means that we have

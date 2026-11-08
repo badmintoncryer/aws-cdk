@@ -1,0 +1,32 @@
+{
+  "/EqualsAssertion": [
+    {
+      "type": "aws:cdk:templateFile",
+      "data": "EqualsAssertion.template.json"
+    }
+  ],
+  "/EqualsAssertion/Parameter": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Parameter"
+    }
+  ],
+  "/EqualsAssertion/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    }
+  ],
+  "/EqualsAssertion/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    }
+  ],
+  "/EqualsAssertion/Exports/Output{\"Ref\":\"Parameter\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefParameter4BE52EB5"
+    }
+  ]
+}

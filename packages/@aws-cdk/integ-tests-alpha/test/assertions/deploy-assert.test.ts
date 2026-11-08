@@ -128,6 +128,28 @@ describe('DeployAssert', () => {
     });
   });
 
+  test('expect outputs the assertion result of the EqualsAssertion', () => {
+    // GIVEN
+    const app = new App();
+    const deplossert = new DeployAssert(app);
+    const query = deplossert.awsApiCall('MyService', 'MyApi');
+
+    // WHEN
+    deplossert.expect(
+      'MyAssertion',
+      ExpectedResult.exact('foo'),
+      ActualResult.fromAwsApiCall(query, 'att'),
+    );
+
+    // THEN
+    const template = Template.fromStack(deplossert.scope);
+    template.hasOutput('*', {
+      Value: {
+        'Fn::GetAtt': [Match.stringLikeRegexp('^EqualsAssertionMyAssertion'), 'assertion'],
+      },
+    });
+  });
+
   describe('awsApiCall', () => {
     test('default', () => {
       // GIVEN
