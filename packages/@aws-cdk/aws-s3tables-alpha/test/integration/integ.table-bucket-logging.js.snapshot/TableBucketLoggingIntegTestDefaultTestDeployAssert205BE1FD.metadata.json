@@ -1,24 +1,6 @@
 {
   "/TableBucketLoggingIntegTest/DefaultTest/DeployAssert": [
     {
-      "type": "aws:cdk:warning",
-      "data": "No cross-stack-reference strength configured, defaulting to \"strong\". We recommend you set feature flag \"@aws-cdk/core:defaultCrossStackReferences\" to \"both\", then deploy everywhere, then set it to \"weak\". Alternatively, set it to \"strong\" explicitly to lock in the current producer-protecting behavior. (See: https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/README.md#reference-strength) [ack: @aws-cdk/core:crossStackReferencesDefaultStrong]",
-      "trace": [
-        "Annotations.addMessage (/home/user/aws-cdk/packages/aws-cdk-lib/core/lib/annotations.js:279:29)",
-        "Annotations.addWarningV2 (/home/user/aws-cdk/packages/aws-cdk-lib/core/lib/annotations.js:145:18)",
-        "resolveValue (/home/user/aws-cdk/packages/aws-cdk-lib/core/lib/private/refs.js:215:54)",
-        "resolveReferencesInElements (/home/user/aws-cdk/packages/aws-cdk-lib/core/lib/private/refs.js:139:30)",
-        "resolveReferences (/home/user/aws-cdk/packages/aws-cdk-lib/core/lib/private/refs.js:124:5)",
-        "prepareApp (/home/user/aws-cdk/packages/aws-cdk-lib/core/lib/private/prepare-app.js:35:36)",
-        "synthesize (/home/user/aws-cdk/packages/aws-cdk-lib/core/lib/private/synthesis.js:72:36)",
-        "App.synth (/home/user/aws-cdk/packages/aws-cdk-lib/core/lib/stage.js:230:96)",
-        "App.synth (/home/user/aws-cdk/packages/aws-cdk-lib/core/lib/app.js:231:27)",
-        "process.<anonymous> (/home/user/aws-cdk/packages/aws-cdk-lib/core/lib/app.js:178:51)",
-        "Object.onceWrapper (node:events:634:26)",
-        "process.emit (node:events:519:28)"
-      ]
-    },
-    {
       "type": "aws:cdk:templateFile",
       "data": "TableBucketLoggingIntegTestDefaultTestDeployAssert205BE1FD.template.json"
     }
@@ -33,44 +15,6 @@
     {
       "type": "aws:cdk:logicalId",
       "data": "CheckBootstrapVersion"
-    }
-  ],
-  "/TableBucketLoggingIntegTest/DefaultTest/DeployAssert/AwsApiCallS3TablesgetTableBucketLogginge37c1d43db916d514141b161f764aa6a/Default": [
-    {
-      "type": "aws:cdk:analytics:construct",
-      "data": "*"
-    },
-    {
-      "type": "aws:cdk:analytics:method",
-      "data": "*"
-    },
-    {
-      "type": "aws:cdk:analytics:method",
-      "data": "*"
-    }
-  ],
-  "/TableBucketLoggingIntegTest/DefaultTest/DeployAssert/AwsApiCallS3TablesgetTableBucketLogginge37c1d43db916d514141b161f764aa6a/AssertionResults": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "AssertionResultsAwsApiCallS3TablesgetTableBucketLogginge37c1d43db916d514141b161f764aa6a"
-    }
-  ],
-  "/TableBucketLoggingIntegTest/DefaultTest/DeployAssert/SingletonFunction1488541a7b23466481b69b4408076b81/Role": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "SingletonFunction1488541a7b23466481b69b4408076b81Role37ABCE73"
-    }
-  ],
-  "/TableBucketLoggingIntegTest/DefaultTest/DeployAssert/SingletonFunction1488541a7b23466481b69b4408076b81/Handler": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "SingletonFunction1488541a7b23466481b69b4408076b81HandlerCD40AE9F"
-    }
-  ],
-  "/TableBucketLoggingIntegTest/DefaultTest/DeployAssert/AwsApiCallS3TablesgetTableBucketLogginge37c1d43db916d514141b161f764aa6a/Default/Default": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "AwsApiCallS3TablesgetTableBucketLogginge37c1d43db916d514141b161f764aa6a"
     }
   ]
 }

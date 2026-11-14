@@ -1,29 +1,16 @@
 {
   "version": "55.0.0",
   "files": {
-    "5dd2b29a7fd296e5c951bda69ccdd3f794ffb74df10ae9999d512f601ec5922d": {
-      "source": {
-        "path": "asset.5dd2b29a7fd296e5c951bda69ccdd3f794ffb74df10ae9999d512f601ec5922d.bundle",
-        "packaging": "zip"
-      },
-      "destinations": {
-        "current_account-current_region-934340d4": {
-          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
-          "objectKey": "5dd2b29a7fd296e5c951bda69ccdd3f794ffb74df10ae9999d512f601ec5922d.zip",
-          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
-        }
-      }
-    },
-    "ebb335122e7a0f8369733986b0e4ddda7fd1a50f6fc071a01b8cef9c19ed8aba": {
+    "21fbb51d7b23f6a6c262b46a9caee79d744a3ac019fd45422d988b96d44b2a22": {
       "displayName": "TableBucketLoggingIntegTestDefaultTestDeployAssert205BE1FD Template",
       "source": {
         "path": "TableBucketLoggingIntegTestDefaultTestDeployAssert205BE1FD.template.json",
         "packaging": "file"
       },
       "destinations": {
-        "current_account-current_region-fb7e1740": {
+        "current_account-current_region-d8d86b35": {
           "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
-          "objectKey": "ebb335122e7a0f8369733986b0e4ddda7fd1a50f6fc071a01b8cef9c19ed8aba.json",
+          "objectKey": "21fbb51d7b23f6a6c262b46a9caee79d744a3ac019fd45422d988b96d44b2a22.json",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
         }
       }

@@ -82,18 +82,6 @@
       "data": "LoggingBucketDDCBCBC9"
     }
   ],
-  "/TableBucketLoggingTestStack/Exports/Output{\"Ref\":\"LogBucketCC3B17E8\"}": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "ExportsOutputRefLogBucketCC3B17E818DCEC53"
-    }
-  ],
-  "/TableBucketLoggingTestStack/Exports/Output{\"Fn::GetAtt\":[\"LoggingBucketDDCBCBC9\",\"TableBucketARN\"]}": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "ExportsOutputFnGetAttLoggingBucketDDCBCBC9TableBucketARNC4360E9F"
-    }
-  ],
   "/TableBucketLoggingTestStack/LogBucket/Policy/Resource": [
     {
       "type": "aws:cdk:logicalId",

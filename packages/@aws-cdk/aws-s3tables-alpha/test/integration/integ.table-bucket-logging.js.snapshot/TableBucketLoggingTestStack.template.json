@@ -216,27 +216,6 @@
    "DeletionPolicy": "Delete"
   }
  },
- "Outputs": {
-  "ExportsOutputRefLogBucketCC3B17E818DCEC53": {
-   "Value": {
-    "Ref": "LogBucketCC3B17E8"
-   },
-   "Export": {
-    "Name": "TableBucketLoggingTestStack:ExportsOutputRefLogBucketCC3B17E818DCEC53"
-   }
-  },
-  "ExportsOutputFnGetAttLoggingBucketDDCBCBC9TableBucketARNC4360E9F": {
-   "Value": {
-    "Fn::GetAtt": [
-     "LoggingBucketDDCBCBC9",
-     "TableBucketARN"
-    ]
-   },
-   "Export": {
-    "Name": "TableBucketLoggingTestStack:ExportsOutputFnGetAttLoggingBucketDDCBCBC9TableBucketARNC4360E9F"
-   }
-  }
- },
  "Parameters": {
   "BootstrapVersion": {
    "Type": "AWS::SSM::Parameter::Value<String>",
