@@ -1,0 +1,35 @@
+{
+  "version": "55.0.0",
+  "title": "Validation Report",
+  "pluginReports": [
+    {
+      "pluginName": "CloudFormation Validate",
+      "pluginVersion": "1.14.0",
+      "conclusion": "success",
+      "violations": [
+        {
+          "ruleName": "F3002",
+          "description": "LoggingConfiguration: Additional properties are not allowed ('LoggingConfiguration' was unexpected)",
+          "severity": "warning",
+          "ruleMetadata": {
+            "category": "Schema"
+          },
+          "violatingConstructs": [
+            {
+              "constructPath": "TableBucketLoggingTestStack/LoggingBucket/LoggingBucket",
+              "constructFqn": "aws-cdk-lib.aws_s3tables.CfnTableBucket",
+              "libraryVersion": "0.0.0",
+              "cloudFormationResource": {
+                "templatePath": "TableBucketLoggingTestStack.template.json",
+                "logicalId": "LoggingBucketDDCBCBC9",
+                "propertyPaths": [
+                  "Properties.LoggingConfiguration"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

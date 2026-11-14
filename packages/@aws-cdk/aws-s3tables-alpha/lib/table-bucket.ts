@@ -1,9 +1,10 @@
 import { EOL } from 'os';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as kms from 'aws-cdk-lib/aws-kms';
+import type * as s3 from 'aws-cdk-lib/aws-s3';
 import * as s3tables from 'aws-cdk-lib/aws-s3tables';
 import type { IResource, ITaggableV2, RemovalPolicy, TagManager } from 'aws-cdk-lib/core';
-import { Lazy, Names, Resource, UnscopedValidationError, Token } from 'aws-cdk-lib/core';
+import { Annotations, Lazy, Names, Resource, Stack, UnscopedValidationError, Token, ValidationError } from 'aws-cdk-lib/core';
 import { memoizedGetter, lit } from 'aws-cdk-lib/core/lib/helpers-internal';
 import { addConstructMetadata } from 'aws-cdk-lib/core/lib/metadata-resource';
 import { propertyInjectable } from 'aws-cdk-lib/core/lib/prop-injectable';
@@ -183,6 +184,45 @@ export enum StorageClass {
    * while maintaining performance for frequently accessed data.
    */
   INTELLIGENT_TIERING = 'INTELLIGENT_TIERING',
+}
+
+/**
+ * Server access logging settings for a table bucket.
+ *
+ * @see https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-server-logs.html
+ */
+export interface TableBucketServerAccessLogs {
+  /**
+   * The general purpose bucket that server access logs are delivered to.
+   *
+   * The bucket must be in the same AWS Region and owned by the same AWS account as the table bucket.
+   * It must use Amazon S3 managed keys (SSE-S3) for default encryption, and it can't have
+   * S3 Object Lock or Requester Pays enabled.
+   *
+   * If the bucket supports resource policies (for example, a bucket defined in this CDK app),
+   * a bucket policy statement that allows the `logging.s3.amazonaws.com` service principal
+   * to deliver log objects is added to it.
+   */
+  readonly destinationBucket: s3.IBucketRef;
+
+  /**
+   * The prefix for the keys of the log objects that are delivered to the destination bucket.
+   *
+   * Amazon S3 doesn't add a slash (`/`) after the prefix. If you deliver logs from multiple
+   * table buckets to the same destination bucket, use a different prefix for each table bucket.
+   *
+   * @default - no prefix
+   */
+  readonly prefix?: string;
+
+  /**
+   * The date that Amazon S3 uses to partition the keys of the delivered log objects.
+   *
+   * Log object keys for table buckets are always partitioned by date.
+   *
+   * @default PartitionDateSource.EVENT_TIME
+   */
+  readonly partitionDateSource?: s3.PartitionDateSource;
 }
 
 /**
@@ -413,6 +453,18 @@ export interface TableBucketProps {
    * @default - STANDARD storage class
    */
   readonly storageClass?: StorageClass;
+
+  /**
+   * Server access logging settings for the table bucket.
+   *
+   * When specified, Amazon S3 delivers log records for the requests made to the
+   * table bucket to the given general purpose bucket.
+   *
+   * @see https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-server-logs.html
+   *
+   * @default - server access logging is disabled
+   */
+  readonly serverAccessLogs?: TableBucketServerAccessLogs;
 }
 
 /**
@@ -678,10 +730,15 @@ export class TableBucket extends TableBucketBase implements ITaggableV2 {
       encryptionConfiguration: bucketEncryption,
       metricsConfiguration: props.requestMetricsStatus ? { status: props.requestMetricsStatus } : undefined,
       storageClassConfiguration: props.storageClass ? { storageClass: props.storageClass } : undefined,
+      loggingConfiguration: this.renderLoggingConfiguration(props.serverAccessLogs),
     });
 
     this.cdkTagManager = this.resource.cdkTagManager;
     this.resource.applyRemovalPolicy(props.removalPolicy);
+
+    if (props.serverAccessLogs) {
+      this.allowLogDelivery(props.serverAccessLogs);
+    }
   }
 
   /**
@@ -763,6 +820,82 @@ export class TableBucket extends TableBucketBase implements ITaggableV2 {
       }
     }
     throw new UnscopedValidationError(lit`UnknownEncryptionConfiguration`, `Unknown encryption configuration detected: ${props.encryption} with key ${props.encryptionKey}`);
+  }
+
+  private renderLoggingConfiguration(
+    serverAccessLogs?: TableBucketServerAccessLogs,
+  ): s3tables.CfnTableBucket.LoggingConfigurationProperty | undefined {
+    if (!serverAccessLogs) {
+      return undefined;
+    }
+
+    const { destinationBucket, prefix } = serverAccessLogs;
+
+    if (prefix !== undefined && !Token.isUnresolved(prefix) && prefix.length > 1024) {
+      throw new ValidationError(
+        lit`InvalidServerAccessLogsPrefix`,
+        `the server access logs prefix must be at most 1024 characters, got ${prefix.length} characters`,
+        this,
+      );
+    }
+
+    return {
+      targetBucket: destinationBucket.bucketRef.bucketName,
+      targetPrefix: prefix ?? '',
+      targetObjectKeyFormat: {
+        partitionedPrefix: {
+          partitionDateSource: serverAccessLogs.partitionDateSource ?? 'EventTime',
+        },
+      },
+    };
+  }
+
+  /**
+   * Allow the S3 logging service principal to deliver server access logs of this table bucket
+   * to the destination bucket.
+   *
+   * @see https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables-server-logs.html#s3-tables-server-logs-permissions
+   */
+  private allowLogDelivery(serverAccessLogs: TableBucketServerAccessLogs) {
+    const { destinationBucket, prefix } = serverAccessLogs;
+
+    // The source conditions can only reference this table bucket when both resources are in the same stack.
+    // Otherwise, the reference would create a cyclic dependency between the stacks.
+    // The ARN is built from the physical name instead of `tableBucketArn` so that the table bucket
+    // can depend on the bucket policy without creating a cyclic dependency within the stack.
+    const isSameStack = Stack.of(this) === Stack.of(destinationBucket);
+    const policyResource = iam.ResourceWithPolicies.of(destinationBucket);
+    const result = policyResource?.addToResourcePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      principals: [new iam.ServicePrincipal('logging.s3.amazonaws.com')],
+      actions: ['s3:PutObject'],
+      resources: [`${destinationBucket.bucketRef.bucketArn}/${prefix ?? ''}*`],
+      conditions: isSameStack ? {
+        ArnLike: {
+          'aws:SourceArn': this.stack.formatArn({
+            service: 's3tables',
+            resource: 'bucket',
+            resourceName: this.physicalName,
+          }),
+        },
+        StringEquals: {
+          'aws:SourceAccount': this.stack.account,
+        },
+      } : {
+        StringEquals: {
+          'aws:SourceAccount': Stack.of(destinationBucket).account,
+        },
+      },
+    }));
+
+    if (!result?.statementAdded) {
+      Annotations.of(this).addWarningV2(
+        '@aws-cdk/aws-s3tables-alpha:serverAccessLogsPolicyNotAdded',
+        `Unable to add the server access logs delivery permissions to the destination bucket ${destinationBucket.node.path}. Add a bucket policy that allows the logging.s3.amazonaws.com service principal to call s3:PutObject on the destination bucket.`,
+      );
+    } else if (isSameStack && result.policyDependable) {
+      this.resource.node.addDependency(result.policyDependable);
+    }
   }
 
   /**
